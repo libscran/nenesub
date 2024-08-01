@@ -18,8 +18,8 @@ target_include_directories(nenesub INTERFACE
 target_compile_features(nenesub INTERFACE cxx_std_17)
 
 # Dependencies
-option(SCRAN_GRAPH_CLUSTER_FETCH_EXTERN "Automatically fetch nenesub's external dependencies (except for igraph)." ON)
-if(SCRAN_GRAPH_CLUSTER_FETCH_EXTERN)
+option(NENESUB_FETCH_EXTERN "Automatically fetch nenesub's external dependencies." ON)
+if(NENESUB_FETCH_EXTERN)
     add_subdirectory(extern)
 else()
     find_package(knncolle_knncolle 2.0.0 CONFIG REQUIRED)
@@ -29,12 +29,12 @@ target_link_libraries(nenesub INTERFACE knncolle::knncolle)
 
 # Tests
 if(CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME)
-    option(SCRAN_GRAPH_CLUSTER_TESTS "Build nenesub's test suite." ON)
+    option(NENESUB_TESTS "Build nenesub's test suite." ON)
 else()
-    option(SCRAN_GRAPH_CLUSTER_TESTS "Build nenesub's test suite." OFF)
+    option(NENESUB_TESTS "Build nenesub's test suite." OFF)
 endif()
 
-if(SCRAN_GRAPH_CLUSTER_TESTS)
+if(NENESUB_TESTS)
     include(CTest)
     if(BUILD_TESTING)
         add_subdirectory(tests)
