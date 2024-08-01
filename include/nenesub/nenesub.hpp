@@ -127,6 +127,7 @@ void compute(Index_ num_obs, GetNeighbors_ get_neighbors, GetIndex_ get_index, G
 
     selected.clear();
     std::vector<uint8_t> tainted(num_obs);
+    Index_ min_remaining = options.min_remaining;
     while (!store.empty()) {
         auto payload = store.top();
         store.pop();
@@ -137,7 +138,7 @@ void compute(Index_ num_obs, GetNeighbors_ get_neighbors, GetIndex_ get_index, G
         const auto& neighbors = get_neighbors(payload.identity);
         Index_ new_remaining = remaining[payload.identity];
 
-        if (new_remaining >= options.min_remaining) {
+        if (new_remaining >= min_remaining) {
             payload.remaining = new_remaining;
             if (!store.empty() && cmp(payload, store.top())) {
                 store.push(payload);
@@ -206,10 +207,14 @@ std::vector<Index_> compute(const knncolle::NeighborList<Index_, Distance_>& nei
  */
 template<typename Dim_, typename Index_, typename Float_>
 std::vector<Index_> compute(const knncolle::Prebuilt<Dim_, Index_, Float_>& prebuilt, const Options& options) {
+    int k = options.num_neighbors;
+    if (k < options.min_remaining) {
+        throw std::runtime_error("number of neighbors is less than 'min_remaining'");
+    }
+
     Index_ nobs = prebuilt.num_observations();
     std::vector<std::vector<Index_> > nn_indices(nobs);
     std::vector<Float_> max_distance(nobs);
-    int k = options.num_neighbors;
 
 #ifndef KNNCOLLE_CUSTOM_PARALLEL
 #ifdef _OPENMP

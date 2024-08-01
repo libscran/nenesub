@@ -43,3 +43,10 @@ TEST(Nenesub, Sanity) {
     auto pselected = nenesub::compute(NR, NC, vec.data(), builder, opt);
     EXPECT_EQ(selected, pselected);
 }
+
+TEST(Nenesub, OptCheck) {
+    knncolle::VptreeBuilder builder;
+    nenesub::Options opt;
+    opt.min_remaining = 1000;
+    scran_tests::expect_error([&]() { nenesub::compute(5, 0, static_cast<double*>(NULL), builder, opt); }, "number of neighbors");
+}
