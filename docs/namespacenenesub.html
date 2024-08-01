@@ -167,9 +167,10 @@ template&lt;typename Index_ , class GetNeighbors_ , class GetIndex_ , class GetM
 <ul>
 <li>Does not belong in the local neighborhood of any previously selected observation.</li>
 <li>Has the most neighbors that are not selected or in the local neighborhoods of previously selected observations. Ties are broken using the smallest distance to each observation's \(k\)-th neighbor (i.e., the densest region of space).</li>
-<li>Has at least <code><a class="el" href="structnenesub_1_1Options.html#aca8e07989de02b7fc173848333a93695">Options::min_remaining</a></code> neighbors that are not selected or in the local neighborhoods of any other selected observation.</li>
+<li>Has at least \(m\) neighbors that are not selected or in the local neighborhoods of any other selected observation.</li>
 </ul>
-<p>We repeat this process until there are no more observations that satisfy these requirements. Each selected observation serves as a representative for up to \(k\) of its nearest neighbors. As such, the rate of subsampling is roughly proportional to the chocie of \(k\), e.g., \(k = 20\) suggests that every 20th observation will be selected on average.</p>
+<p>We repeat this process until there are no more observations that satisfy these requirements.</p>
+<p>Each selected observation effectively serves as a representative for up to \(k\) of its nearest neighbors. As such, the rate of subsampling is roughly proportional to the choice of \(k\). A non-zero \(m\) ensures that there are enough neighbors to warrant the selection of an observation, to protect against overrepresentation of outlier points that are not in any observation's neighborhood. Some testing suggests that the dataset is subsampled by a factor of \(k\), though this can increase or decrease for smaller or larger \(m\), respectively.</p>
 <p>The <b>nenesub</b> approach ensures that the subsampled points are well-distributed across the dataset. Low-frequency subpopulations will always have at least a few representatives if they are sufficiently distant from other subpopulations. In contrast, random sampling does not provide strong guarantees for capture of a rare subpopulation. We also preserve the relative density across the dataset as more representatives will be generated from high-density regions. This simplifies the interpretation of analysis results generated from the subsetted dataset.</p>
 <dl class="tparams"><dt>Template Parameters</dt><dd>
   <table class="tparams">
