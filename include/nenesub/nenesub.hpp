@@ -24,14 +24,12 @@ namespace nenesub {
 struct Options {
     /**
      * The number of nearest neighbors to use, i.e., \f$k\f$. 
-     * Larger values decrease the subsampling rate, i.e., fewer observations are selected.
      * Only relevant for the `compute()` overloads without pre-computed neighbors.
      */
     int num_neighbors = 20;
 
     /**
-     * The minimum number of remaining neighbors that an observation must have in order to be selected.
-     * Larger values decrease the subsampling rate, i.e., fewer observations are selected.
+     * The minimum number of remaining neighbors that an observation must have in order to be selected, i.e., \f$m\f$.
      * This should be less than or equal to `Options::num_neighbors`.
      */
     int min_remaining = 10;
@@ -51,11 +49,15 @@ struct Options {
  * - Does not belong in the local neighborhood of any previously selected observation.
  * - Has the most neighbors that are not selected or in the local neighborhoods of previously selected observations.
  *   Ties are broken using the smallest distance to each observation's \f$k\f$-th neighbor (i.e., the densest region of space).
- * - Has at least `Options::min_remaining` neighbors that are not selected or in the local neighborhoods of any other selected observation.
+ * - Has at least \f$m\f$ neighbors that are not selected or in the local neighborhoods of any other selected observation.
  *
  * We repeat this process until there are no more observations that satisfy these requirements. 
- * Each selected observation serves as a representative for up to \f$k\f$ of its nearest neighbors.
- * As such, the rate of subsampling is roughly proportional to the chocie of \f$k\f$, e.g., \f$k = 20\f$ suggests that every 20th observation will be selected on average.
+ *
+ * Each selected observation effectively serves as a representative for up to \f$k\f$ of its nearest neighbors.
+ * As such, the rate of subsampling is roughly proportional to the choice of \f$k\f$.
+ * A non-zero \f$m\f$ ensures that there are enough neighbors to warrant the selection of an observation,
+ * to protect against overrepresentation of outlier points that are not in any observation's neighborhood.
+ * Some testing suggests that the dataset is subsampled by a factor of \f$k\f$, though this can increase or decrease for smaller or larger \f$m\f$, respectively.
  *
  * The **nenesub** approach ensures that the subsampled points are well-distributed across the dataset.
  * Low-frequency subpopulations will always have at least a few representatives if they are sufficiently distant from other subpopulations.
