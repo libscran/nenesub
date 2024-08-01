@@ -81,7 +81,8 @@ $(function() {
   <div class="headertitle"><div class="title">Nearest-neighbors subsampling </div></div>
 </div><!--header-->
 <div class="contents">
-<div class="textblock"><p><a class="anchor" id="md__2github_2workspace_2README"></a> </p><h1>Overview</h1>
+<div class="textblock"><p><a class="anchor" id="md__2github_2workspace_2README"></a> <img src="https://github.com/libscran/nenesub/actions/workflows/run-tests.yaml/badge.svg" alt="Unit tests" style="pointer-events: none;" class="inline"/> <img src="https://github.com/libscran/nenesub/actions/workflows/doxygenate.yaml/badge.svg" alt="Documentation" style="pointer-events: none;" class="inline"/> <a href="https://codecov.io/gh/libscran/nenesub"><img src="https://codecov.io/gh/libscran/nenesub/graph/badge.svg?token=bmenggvgzE" alt="Codecov" style="pointer-events: none;" class="inline"/></a></p>
+<h1>Overview</h1>
 <p><b>nenesub</b> implements a simple algorithm for deterministic subsampling of a dataset based on nearest neighbors. Starting from dense regions of the high-dimensional space, we select an observation for inclusion into the subsampled set. Every time we select an observation, we remove it and all of its nearest neighbors from the dataset. We then select the next observation with the most remaining neighbors, with ties broken by density; this is repeated until there are no more observations.</p>
 <p>The general idea is that each selected observation serves as a representative for its nearest neighbors. This ensures that the subsampled points are well-distributed across the dataset. Low-frequency subpopulations will always have at least a few representatives if they are sufficiently distant from other subpopulations. We also preserve the relative density across the dataset as more representatives will be generated from high-density regions.</p>
 <h1>Quick start</h1>
