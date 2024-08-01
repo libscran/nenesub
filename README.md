@@ -1,5 +1,9 @@
 # Nearest-neighbors subsampling
 
+![Unit tests](https://github.com/libscran/nenesub/actions/workflows/run-tests.yaml/badge.svg)
+![Documentation](https://github.com/libscran/nenesub/actions/workflows/doxygenate.yaml/badge.svg)
+[![Codecov](https://codecov.io/gh/libscran/nenesub/graph/badge.svg?token=bmenggvgzE)](https://codecov.io/gh/libscran/nenesub)
+
 ## Overview
 
 **nenesub** implements a simple algorithm for deterministic subsampling of a dataset based on nearest neighbors.
