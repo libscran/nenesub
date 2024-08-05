@@ -86,12 +86,12 @@ $(function() {
 <p><b>nenesub</b> implements a simple algorithm for deterministic subsampling of a dataset based on nearest neighbors. Starting from dense regions of the high-dimensional space, we select an observation for inclusion into the subsampled set. Every time we select an observation, we remove it and all of its nearest neighbors from the dataset. We then select the next observation with the most remaining neighbors, with ties broken by density; this is repeated until there are no more observations.</p>
 <p>The general idea is that each selected observation serves as a representative for its nearest neighbors. This ensures that the subsampled points are well-distributed across the dataset. Low-frequency subpopulations will always have at least a few representatives if they are sufficiently distant from other subpopulations. We also preserve the relative density across the dataset as more representatives will be generated from high-density regions.</p>
 <h1>Quick start</h1>
-<p>Given a column-major array of coordinates (typically in some <a href="https://github.com/libscran/scran_pca">low-dimensional space</a>), we can subsample the observations:</p>
+<p>Given a column-major array of coordinates (possibly in some <a href="https://github.com/libscran/scran_pca">low-dimensional space</a>), we can subsample the observations using their nearest neighbors:</p>
 <div class="fragment"><div class="line"><span class="preprocessor">#include &quot;<a class="code" href="nenesub_8hpp.html">nenesub/nenesub.hpp</a>&quot;</span></div>
 <div class="line"> </div>
 <div class="line"><span class="keywordtype">size_t</span> nobs = 1000;</div>
 <div class="line"><span class="keywordtype">size_t</span> ndims = 100;</div>
-<div class="line">std::vector&lt;double&gt; coordinates(ndims * ncells);</div>
+<div class="line">std::vector&lt;double&gt; coordinates(ndims * nobs);</div>
 <div class="line"><span class="comment">// Fill it with some coordinates...</span></div>
 <div class="line"> </div>
 <div class="line"><a class="code hl_struct" href="structnenesub_1_1Options.html">nenesub::Options</a> opt;</div>
@@ -101,7 +101,7 @@ $(function() {
 <div class="line"> </div>
 <div class="line"><span class="keyword">auto</span> selected = <a class="code hl_function" href="namespacenenesub.html#a38e855459f3bf52b4248a40e73a27129">nenesub::compute</a>(</div>
 <div class="line">    ndims,</div>
-<div class="line">    ncells,</div>
+<div class="line">    nobs,</div>
 <div class="line">    coordinates.data(),</div>
 <div class="line">    <a class="code hl_classRef" href="https://knncolle.github.io/knncolle/classknncolle_1_1VptreeBuilder.html">knncolle::VptreeBuilder&lt;&gt;</a>(), <span class="comment">// any NN algorithm can be used here.</span></div>
 <div class="line">    opt</div>
@@ -113,16 +113,17 @@ $(function() {
 <div class="ttc" id="astructnenesub_1_1Options_html_a5df6fdc7c00d5560cf24e707c6d2a318"><div class="ttname"><a href="structnenesub_1_1Options.html#a5df6fdc7c00d5560cf24e707c6d2a318">nenesub::Options::num_neighbors</a></div><div class="ttdeci">int num_neighbors</div><div class="ttdef"><b>Definition</b> nenesub.hpp:29</div></div>
 <div class="ttc" id="astructnenesub_1_1Options_html_a97589522562c135c803914e6e4abdecc"><div class="ttname"><a href="structnenesub_1_1Options.html#a97589522562c135c803914e6e4abdecc">nenesub::Options::num_threads</a></div><div class="ttdeci">int num_threads</div><div class="ttdef"><b>Definition</b> nenesub.hpp:41</div></div>
 <div class="ttc" id="astructnenesub_1_1Options_html_aca8e07989de02b7fc173848333a93695"><div class="ttname"><a href="structnenesub_1_1Options.html#aca8e07989de02b7fc173848333a93695">nenesub::Options::min_remaining</a></div><div class="ttdeci">int min_remaining</div><div class="ttdef"><b>Definition</b> nenesub.hpp:35</div></div>
-</div><!-- fragment --><p>We can also supply a precomputed list of neighbors.</p>
+</div><!-- fragment --><p>Alternatively, we can supply a precomputed list of neighbors:</p>
 <div class="fragment"><div class="line"><span class="comment">// Getting the nearest neighbors:</span></div>
 <div class="line"><a class="code hl_classRef" href="https://knncolle.github.io/knncolle/classknncolle_1_1VptreeBuilder.html">knncolle::VptreeBuilder</a> algorithm;</div>
-<div class="line"><a class="code hl_classRef" href="https://knncolle.github.io/knncolle/classknncolle_1_1SimpleMatrix.html">knncolle::SimpleMatrix</a> kmatrix(nobs, ndims, coordinates.data());</div>
+<div class="line"><a class="code hl_classRef" href="https://knncolle.github.io/knncolle/classknncolle_1_1SimpleMatrix.html">knncolle::SimpleMatrix</a> kmatrix(ndims, nobs, coordinates.data());</div>
 <div class="line"><span class="keyword">auto</span> prebuilt = algorithm.<a class="code hl_functionRef" href="https://knncolle.github.io/knncolle/classknncolle_1_1Builder.html#afeda432debae999f988f32f147055251">build_unique</a>(kmatrix);</div>
-<div class="line"><span class="keyword">auto</span> neighbors = knncolle::find_neighbors(prebuilt);</div>
+<div class="line"><span class="keyword">auto</span> neighbors = <a class="code hl_functionRef" href="https://knncolle.github.io/knncolle/namespaceknncolle.html#a22e035b2d5eb293fd828a67e61f3213d">knncolle::find_nearest_neighbors</a>(*prebuilt, <span class="comment">/* k = */</span> 20);</div>
 <div class="line"> </div>
-<div class="line"><span class="keyword">auto</span> compute = <a class="code hl_function" href="namespacenenesub.html#a38e855459f3bf52b4248a40e73a27129">nenesub::compute</a>(neighbors, opt);</div>
+<div class="line"><span class="keyword">auto</span> selected = <a class="code hl_function" href="namespacenenesub.html#a38e855459f3bf52b4248a40e73a27129">nenesub::compute</a>(neighbors, opt);</div>
 <div class="ttc" id="aclassknncolle_1_1Builder_html_afeda432debae999f988f32f147055251"><div class="ttname"><a href="https://knncolle.github.io/knncolle/classknncolle_1_1Builder.html#afeda432debae999f988f32f147055251">knncolle::Builder::build_unique</a></div><div class="ttdeci">std::unique_ptr&lt; Prebuilt&lt; typename Matrix_::dimension_type, typename Matrix_::index_type, Float_ &gt; &gt; build_unique(const Matrix_ &amp;data) const</div></div>
 <div class="ttc" id="aclassknncolle_1_1SimpleMatrix_html"><div class="ttname"><a href="https://knncolle.github.io/knncolle/classknncolle_1_1SimpleMatrix.html">knncolle::SimpleMatrix</a></div></div>
+<div class="ttc" id="anamespaceknncolle_html_a22e035b2d5eb293fd828a67e61f3213d"><div class="ttname"><a href="https://knncolle.github.io/knncolle/namespaceknncolle.html#a22e035b2d5eb293fd828a67e61f3213d">knncolle::find_nearest_neighbors</a></div><div class="ttdeci">NeighborList&lt; Index_, Float_ &gt; find_nearest_neighbors(const Prebuilt&lt; Dim_, Index_, Float_ &gt; &amp;index, int k, int num_threads=1)</div></div>
 </div><!-- fragment --><p>Check out the <a href="https://libscran.github.io/nenesub">reference documentation</a> for more details.</p>
 <h1>Building projects</h1>
 <h2>CMake with <code>FetchContent</code></h2>
