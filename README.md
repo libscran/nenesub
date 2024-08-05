@@ -18,14 +18,15 @@ We also preserve the relative density across the dataset as more representatives
 
 ## Quick start
 
-Given a column-major array of coordinates (typically in some [low-dimensional space](https://github.com/libscran/scran_pca)), we can subsample the observations:
+Given a column-major array of coordinates (possibly in some [low-dimensional space](https://github.com/libscran/scran_pca)),
+we can subsample the observations using their nearest neighbors:
 
 ```cpp
 #include "nenesub/nenesub.hpp"
 
 size_t nobs = 1000;
 size_t ndims = 100;
-std::vector<double> coordinates(ndims * ncells);
+std::vector<double> coordinates(ndims * nobs);
 // Fill it with some coordinates...
 
 nenesub::Options opt;
@@ -35,23 +36,23 @@ opt.num_threads = 3;
 
 auto selected = nenesub::compute(
     ndims,
-    ncells,
+    nobs,
     coordinates.data(),
     knncolle::VptreeBuilder<>(), // any NN algorithm can be used here.
     opt
 );
 ```
 
-We can also supply a precomputed list of neighbors.
+Alternatively, we can supply a precomputed list of neighbors:
 
 ```cpp
 // Getting the nearest neighbors:
 knncolle::VptreeBuilder algorithm;
-knncolle::SimpleMatrix kmatrix(nobs, ndims, coordinates.data());
+knncolle::SimpleMatrix kmatrix(ndims, nobs, coordinates.data());
 auto prebuilt = algorithm.build_unique(kmatrix);
-auto neighbors = knncolle::find_neighbors(prebuilt);
+auto neighbors = knncolle::find_nearest_neighbors(*prebuilt, /* k = */ 20);
 
-auto compute = nenesub::compute(neighbors, opt);
+auto selected = nenesub::compute(neighbors, opt);
 ```
 
 Check out the [reference documentation](https://libscran.github.io/nenesub) for more details.
