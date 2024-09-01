@@ -36,7 +36,8 @@ struct Options {
 
     /**
      * The number of threads to use.
-     * Only relevant for the `compute()` overloads without pre-computed neighbors.
+     * This uses the parallelization scheme defined by `knncolle::parallelize()`.
+     * Only relevant for the `compute()` overloads that perform a neighbor search.
      */
     int num_threads = 10;
 };
@@ -184,9 +185,9 @@ std::vector<Index_> compute(const knncolle::NeighborList<Index_, Distance_>& nei
     std::vector<Index_> output;
     compute(
         static_cast<Index_>(neighbors.size()),
-        [&](size_t i) -> const std::vector<Index_>& { return neighbors[i].first; }, 
-        [](const std::vector<Index_>& x, Index_ n) -> Index_ { return x[n]; }, 
-        [&](size_t i) -> Distance_ { return neighbors[i].second.back(); }, 
+        [&](size_t i) -> const auto& { return neighbors[i]; }, 
+        [](const auto& x, Index_ n) -> Index_ { return x[n].first; }, 
+        [&](size_t i) -> Distance_ { return neighbors[i].back().second; }, 
         options,
         output
     );
@@ -216,40 +217,14 @@ std::vector<Index_> compute(const knncolle::Prebuilt<Dim_, Index_, Float_>& preb
     std::vector<std::vector<Index_> > nn_indices(nobs);
     std::vector<Float_> max_distance(nobs);
 
-#ifndef KNNCOLLE_CUSTOM_PARALLEL
-#ifdef _OPENMP
-    #pragma omp parallel num_threads(options.num_threads)
-    {
-    auto sptr = prebuilt.initialize();
-    std::vector<Float_> nn_distances;
-    #pragma omp for
-    for (Index_ i = 0; i < nobs; ++i) {
-#else
-    auto sptr = prebuilt.initialize();
-    std::vector<Float_> nn_distances;
-    for (Index_ i = 0; i < nobs; ++i) {
-#endif
-#else
-    KNNCOLLE_CUSTOM_PARALLEL(nobs, options.num_threads, [&](Index_ start, Index_ length) -> void {
-    auto sptr = prebuilt.initialize();
-    std::vector<Float_> nn_distances;
-    for (Index_ i = start, end = start + length; i < end; ++i) {
-#endif        
-
-        sptr->search(i, k, &(nn_indices[i]), &nn_distances);
-        max_distance[i] = (k ? 0 : nn_distances.back());
-
-#ifndef KNNCOLLE_CUSTOM_PARALLEL    
-#ifdef _OPENMP
-    }
-    }
-#else
-    }
-#endif
-#else
-    }
+    knncolle::parallelize(options.num_threads, nobs, [&](int, Index_ start, Index_ length) -> void {
+        auto sptr = prebuilt.initialize();
+        std::vector<Float_> nn_distances;
+        for (Index_ i = start, end = start + length; i < end; ++i) {
+            sptr->search(i, k, &(nn_indices[i]), &nn_distances);
+            max_distance[i] = (k ? 0 : nn_distances.back());
+        }
     });
-#endif
 
     std::vector<Index_> output;
     compute(

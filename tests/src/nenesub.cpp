@@ -3,16 +3,11 @@
 
 TEST(Nenesub, Basic) {
     knncolle::NeighborList<int, double> neighbors(5);
-    neighbors[0].first = { 1, 2 }; // 0,1,2 are in the first group.
-    neighbors[0].second = { 0.1, 0.2 };
-    neighbors[1].first = { 0, 2 };
-    neighbors[1].second = { 0.1, 0.3 };
-    neighbors[2].first = { 0, 1 };
-    neighbors[2].second = { 0.2, 0.3 };
-    neighbors[3].first = { 4, 2 }; // 3,4 are in the second group.
-    neighbors[3].second = { 0.05, 0.85 };
-    neighbors[4].first = { 3, 2 };
-    neighbors[4].second = { 0.05, 0.8 };
+    neighbors[0] = { { 1, 0.1 }, { 2, 0.2 } }; // 0,1,2 are in the first group.
+    neighbors[1] = { { 0, 0.1 }, { 2, 0.3 } };
+    neighbors[2] = { { 0, 0.2 }, { 1, 0.3 } };
+    neighbors[3] = { { 4, 0.05 }, { 2, 0.85 } }; // 3,4 are in the second group.
+    neighbors[4] = { { 3, 0.05 }, { 2, 0.8 } };
 
     nenesub::Options opt;
     auto out = nenesub::compute(neighbors, opt);
