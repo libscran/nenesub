@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='UTF-8' standalone='yes' ?>
-<tagfile doxygen_version="1.9.8">
+<tagfile doxygen_version="1.12.0">
   <compound kind="file">
     <name>nenesub.hpp</name>
     <path>nenesub/</path>
@@ -54,15 +54,15 @@
       <type>std::vector&lt; Index_ &gt;</type>
       <name>compute</name>
       <anchorfile>namespacenenesub.html</anchorfile>
-      <anchor>a9690e9944c27045dfed80989191fc842</anchor>
-      <arglist>(const knncolle::Prebuilt&lt; Dim_, Index_, Float_ &gt; &amp;prebuilt, const Options &amp;options)</arglist>
+      <anchor>a5c6f30bc186c0820c3341105f928c83f</anchor>
+      <arglist>(const knncolle::Prebuilt&lt; Index_, Input_, Distance_ &gt; &amp;prebuilt, const Options &amp;options)</arglist>
     </member>
     <member kind="function">
       <type>std::vector&lt; Index_ &gt;</type>
       <name>compute</name>
       <anchorfile>namespacenenesub.html</anchorfile>
-      <anchor>a19b97f1e543d9932e4a31d6ade6acb51</anchor>
-      <arglist>(Dim_ num_dims, Index_ num_obs, const Value_ *data, const knncolle::Builder&lt; knncolle::SimpleMatrix&lt; Dim_, Index_, Value_ &gt;, Float_ &gt; &amp;knn_method, const Options &amp;options)</arglist>
+      <anchor>a0cde2587cea2ab2b029bab8445cd3dd5</anchor>
+      <arglist>(std::size_t num_dims, Index_ num_obs, const Value_ *data, const knncolle::Builder&lt; Index_, Value_, Distance_, Matrix_ &gt; &amp;knn_method, const Options &amp;options)</arglist>
     </member>
   </compound>
   <compound kind="page">

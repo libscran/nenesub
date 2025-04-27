@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['initialize_5falgorithm_0',['initialize_algorithm',['https://knncolle.github.io/knncolle/structknncolle_1_1KmknnOptions.html#a01ab1d6e283fa8945723f33942e310c0',1,'knncolle::KmknnOptions']]]
+  ['min_5fremaining_0',['min_remaining',['../structnenesub_1_1Options.html#aca8e07989de02b7fc173848333a93695',1,'nenesub::Options']]]
 ];

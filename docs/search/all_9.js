@@ -1,8 +1,12 @@
 var searchData=
 [
-  ['manhattandistance_0',['ManhattanDistance',['https://knncolle.github.io/knncolle/structknncolle_1_1ManhattanDistance.html',1,'knncolle']]],
-  ['min_5fremaining_1',['min_remaining',['../structnenesub_1_1Options.html#aca8e07989de02b7fc173848333a93695',1,'nenesub::Options']]],
-  ['mockdistance_2',['MockDistance',['https://knncolle.github.io/knncolle/structknncolle_1_1MockDistance.html',1,'knncolle']]],
-  ['mockmatrix_3',['MockMatrix',['https://knncolle.github.io/knncolle/classknncolle_1_1MockMatrix.html',1,'knncolle']]],
-  ['mockmatrix_2ehpp_4',['MockMatrix.hpp',['https://knncolle.github.io/knncolle/MockMatrix_8hpp.html',1,'']]]
+  ['manhattandistance_0',['ManhattanDistance',['https://knncolle.github.io/knncolle/classknncolle_1_1ManhattanDistance.html',1,'knncolle']]],
+  ['matrix_1',['Matrix',['https://knncolle.github.io/knncolle/classknncolle_1_1Matrix.html',1,'knncolle']]],
+  ['matrix_2ehpp_2',['Matrix.hpp',['https://knncolle.github.io/knncolle/Matrix_8hpp.html',1,'']]],
+  ['matrix_3c_20index_5f_2c_20data_5f_20_3e_3',['Matrix&lt; Index_, Data_ &gt;',['https://knncolle.github.io/knncolle/classknncolle_1_1Matrix.html',1,'knncolle']]],
+  ['matrix_3c_20index_5f_2c_20normalized_5f_20_3e_4',['Matrix&lt; Index_, Normalized_ &gt;',['https://knncolle.github.io/knncolle/classknncolle_1_1Matrix.html',1,'knncolle']]],
+  ['matrixextractor_5',['MatrixExtractor',['https://knncolle.github.io/knncolle/classknncolle_1_1MatrixExtractor.html',1,'knncolle']]],
+  ['matrixextractor_3c_20data_5f_20_3e_6',['MatrixExtractor&lt; Data_ &gt;',['https://knncolle.github.io/knncolle/classknncolle_1_1MatrixExtractor.html',1,'knncolle']]],
+  ['matrixextractor_3c_20normalized_5f_20_3e_7',['MatrixExtractor&lt; Normalized_ &gt;',['https://knncolle.github.io/knncolle/classknncolle_1_1MatrixExtractor.html',1,'knncolle']]],
+  ['min_5fremaining_8',['min_remaining',['../structnenesub_1_1Options.html#aca8e07989de02b7fc173848333a93695',1,'nenesub::Options']]]
 ];
