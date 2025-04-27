@@ -24,10 +24,16 @@ we can subsample the observations using their nearest neighbors:
 ```cpp
 #include "nenesub/nenesub.hpp"
 
-size_t nobs = 1000;
-size_t ndims = 100;
+int ndims = 100;
+int nobs = 1000;
 std::vector<double> coordinates(ndims * nobs);
-// Fill it with some coordinates...
+// Fill it with some coordinates as a column-major array of ndims * nobs.
+
+// Configuring the neighbor search algorithm; here, we'll be using an exact
+// search based on VP trees with a Euclidean distance metric.
+knncolle::VptreeBuilder<int, double, double> vp_builder(
+    std::make_shared<knncolle::EuclideanDistance<double, double> >()
+);
 
 nenesub::Options opt;
 opt.num_neighbors = 20;
@@ -38,7 +44,7 @@ auto selected = nenesub::compute(
     ndims,
     nobs,
     coordinates.data(),
-    knncolle::VptreeBuilder<>(), // any NN algorithm can be used here.
+    vp_builder,
     opt
 );
 ```

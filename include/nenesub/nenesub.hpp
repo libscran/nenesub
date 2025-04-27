@@ -3,8 +3,9 @@
 
 #include <vector>
 #include <queue>
-#include <cstdint>
+#include <cstddef>
 #include <algorithm>
+
 #include "knncolle/knncolle.hpp"
 
 /**
@@ -85,12 +86,12 @@ struct Options {
  */
 template<typename Index_, class GetNeighbors_, class GetIndex_, class GetMaxDistance_>
 void compute(Index_ num_obs, GetNeighbors_ get_neighbors, GetIndex_ get_index, GetMaxDistance_ get_max_distance, const Options& options, std::vector<Index_>& selected) {
-    typedef decltype(get_max_distance(0)) Distance_;
+    typedef decltype(get_max_distance(0)) Distance;
     struct Payload {
-        Payload(Index_ identity, Index_ remaining, Distance_ max_distance) : remaining(remaining), identity(identity), max_distance(max_distance) {}
+        Payload(Index_ identity, Index_ remaining, Distance max_distance) : remaining(remaining), identity(identity), max_distance(max_distance) {}
         Index_ remaining;
         Index_ identity;
-        Distance_ max_distance;
+        Distance max_distance;
     };
 
     auto cmp = [](const Payload& left, const Payload& right) -> bool {
@@ -127,7 +128,7 @@ void compute(Index_ num_obs, GetNeighbors_ get_neighbors, GetIndex_ get_index, G
     }
 
     selected.clear();
-    std::vector<uint8_t> tainted(num_obs);
+    std::vector<unsigned char> tainted(num_obs);
     Index_ min_remaining = options.min_remaining;
     while (!store.empty()) {
         auto payload = store.top();
@@ -185,9 +186,9 @@ std::vector<Index_> compute(const knncolle::NeighborList<Index_, Distance_>& nei
     std::vector<Index_> output;
     compute(
         static_cast<Index_>(neighbors.size()),
-        [&](size_t i) -> const auto& { return neighbors[i]; }, 
-        [](const auto& x, Index_ n) -> Index_ { return x[n].first; }, 
-        [&](size_t i) -> Distance_ { return neighbors[i].back().second; }, 
+        [&](Index_ i) -> const auto& { return neighbors[i]; }, 
+        [](const std::vector<std::pair<Index_, Distance_> >& x, Index_ n) -> Index_ { return x[n].first; }, 
+        [&](Index_ i) -> Distance_ { return neighbors[i].back().second; }, 
         options,
         output
     );
@@ -199,15 +200,17 @@ std::vector<Index_> compute(const knncolle::NeighborList<Index_, Distance_>& nei
  *
  * @tparam Dim_ Integer type for the dimension index.
  * @tparam Index_ Integer type for the observation index.
- * @tparam Float_ Floating-point type for the distances.
+ * @tparam Input_ Numeric type for the input data used to build the search index.
+ * This is only required to define the `knncolle::Prebuilt` class and is otherwise ignored.
+ * @tparam Distance_ Floating-point type for the distances.
  *
  * @param[in] prebuilt A prebuilt nearest-neighbor search index on the observations of interest.
  * @param options Further options.
  *
  * @return A sorted vector of the indices of the subsampled observations.
  */
-template<typename Dim_, typename Index_, typename Float_>
-std::vector<Index_> compute(const knncolle::Prebuilt<Dim_, Index_, Float_>& prebuilt, const Options& options) {
+template<typename Index_, typename Input_, typename Distance_>
+std::vector<Index_> compute(const knncolle::Prebuilt<Index_, Input_, Distance_>& prebuilt, const Options& options) {
     int k = options.num_neighbors;
     if (k < options.min_remaining) {
         throw std::runtime_error("number of neighbors is less than 'min_remaining'");
@@ -215,11 +218,11 @@ std::vector<Index_> compute(const knncolle::Prebuilt<Dim_, Index_, Float_>& preb
 
     Index_ nobs = prebuilt.num_observations();
     std::vector<std::vector<Index_> > nn_indices(nobs);
-    std::vector<Float_> max_distance(nobs);
+    std::vector<Distance_> max_distance(nobs);
 
     knncolle::parallelize(options.num_threads, nobs, [&](int, Index_ start, Index_ length) -> void {
         auto sptr = prebuilt.initialize();
-        std::vector<Float_> nn_distances;
+        std::vector<Distance_> nn_distances;
         for (Index_ i = start, end = start + length; i < end; ++i) {
             sptr->search(i, k, &(nn_indices[i]), &nn_distances);
             max_distance[i] = (k ? 0 : nn_distances.back());
@@ -229,9 +232,9 @@ std::vector<Index_> compute(const knncolle::Prebuilt<Dim_, Index_, Float_>& preb
     std::vector<Index_> output;
     compute(
         nobs,
-        [&](size_t i) -> const std::vector<Index_>& { return nn_indices[i]; }, 
+        [&](Index_ i) -> const std::vector<Index_>& { return nn_indices[i]; }, 
         [](const std::vector<Index_>& x, Index_ n) -> Index_ { return x[n]; }, 
-        [&](size_t i) -> Float_ { return max_distance[i]; },
+        [&](Index_ i) -> Distance_ { return max_distance[i]; },
         options,
         output
     );
@@ -243,8 +246,10 @@ std::vector<Index_> compute(const knncolle::Prebuilt<Dim_, Index_, Float_>& preb
  *
  * @tparam Dim_ Integer type for the dimension index.
  * @tparam Index_ Integer type for the observation index.
- * @tparam Value_ Numeric type for the input data.
- * @tparam Float_ Floating-point type for the distances.
+ * @tparam Input_ Numeric type for the input data.
+ * @tparam Distance_ Floating-point type for the distances.
+ * @tparam Matrix_ Class of the input data matrix for the neighbor search.
+ * This should satisfy the `knncolle::Matrix` interface.
  *
  * @param num_dims Number of dimensions for the observation coordinates.
  * @param num_obs Number of observations in the dataset.
@@ -254,15 +259,15 @@ std::vector<Index_> compute(const knncolle::Prebuilt<Dim_, Index_, Float_>& preb
  *
  * @return A sorted vector of the indices of the subsampled observations.
  */
-template<typename Dim_, typename Index_, typename Value_, typename Float_>
+template<typename Index_, typename Input_, typename Distance_, class Matrix_ = knncolle::Matrix<Index_, Input_> >
 std::vector<Index_> compute(
-    Dim_ num_dims, 
+    std::size_t num_dims, 
     Index_ num_obs, 
-    const Value_* data, 
-    const knncolle::Builder<knncolle::SimpleMatrix<Dim_, Index_, Value_>, Float_>& knn_method,
+    const Input_* data, 
+    const knncolle::Builder<Index_, Input_, Distance_, Matrix_>& knn_method,
     const Options& options) 
 {
-    auto prebuilt = knn_method.build_unique(knncolle::SimpleMatrix<Dim_, Index_, Value_>(num_dims, num_obs, data));
+    auto prebuilt = knn_method.build_unique(knncolle::SimpleMatrix<Index_, Input_>(num_dims, num_obs, data));
     return compute(*prebuilt, options);
 }
 

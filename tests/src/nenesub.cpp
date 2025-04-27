@@ -28,7 +28,7 @@ TEST(Nenesub, Sanity) {
     int NR = 5, NC = 1000;
     auto vec = scran_tests::simulate_vector<double>(NR * NC, scran_tests::SimulationParameters());
 
-    knncolle::VptreeBuilder builder;
+    knncolle::VptreeBuilder<int, double, double> builder(std::make_shared<knncolle::EuclideanDistance<double, double> >());;
     nenesub::Options opt;
     auto selected = nenesub::compute(NR, NC, vec.data(), builder, opt);
     EXPECT_LT(selected.size(), NC);
@@ -40,7 +40,7 @@ TEST(Nenesub, Sanity) {
 }
 
 TEST(Nenesub, OptCheck) {
-    knncolle::VptreeBuilder builder;
+    knncolle::VptreeBuilder<int, double, double> builder(std::make_shared<knncolle::EuclideanDistance<double, double> >());;
     nenesub::Options opt;
     opt.min_remaining = 1000;
     scran_tests::expect_error([&]() { nenesub::compute(5, 0, static_cast<double*>(NULL), builder, opt); }, "number of neighbors");
