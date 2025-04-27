@@ -61,8 +61,8 @@
       <type>std::vector&lt; Index_ &gt;</type>
       <name>compute</name>
       <anchorfile>namespacenenesub.html</anchorfile>
-      <anchor>a0cde2587cea2ab2b029bab8445cd3dd5</anchor>
-      <arglist>(std::size_t num_dims, Index_ num_obs, const Value_ *data, const knncolle::Builder&lt; Index_, Value_, Distance_, Matrix_ &gt; &amp;knn_method, const Options &amp;options)</arglist>
+      <anchor>aa83f44b27605b0e8eaadc797a28424f2</anchor>
+      <arglist>(std::size_t num_dims, Index_ num_obs, const Input_ *data, const knncolle::Builder&lt; Index_, Input_, Distance_, Matrix_ &gt; &amp;knn_method, const Options &amp;options)</arglist>
     </member>
   </compound>
   <compound kind="page">

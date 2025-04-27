@@ -120,9 +120,9 @@ Functions</h2></td></tr>
 <tr class="memitem:a5c6f30bc186c0820c3341105f928c83f" id="r_a5c6f30bc186c0820c3341105f928c83f"><td class="memTemplParams" colspan="2">template&lt;typename Index_ , typename Input_ , typename Distance_ &gt; </td></tr>
 <tr class="memitem:a5c6f30bc186c0820c3341105f928c83f"><td class="memTemplItemLeft" align="right" valign="top">std::vector&lt; Index_ &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="#a5c6f30bc186c0820c3341105f928c83f">compute</a> (const <a class="elRef" href="https://knncolle.github.io/knncolle/classknncolle_1_1Prebuilt.html">knncolle::Prebuilt</a>&lt; Index_, Input_, Distance_ &gt; &amp;prebuilt, const <a class="el" href="structnenesub_1_1Options.html">Options</a> &amp;options)</td></tr>
 <tr class="separator:a5c6f30bc186c0820c3341105f928c83f"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a0cde2587cea2ab2b029bab8445cd3dd5" id="r_a0cde2587cea2ab2b029bab8445cd3dd5"><td class="memTemplParams" colspan="2">template&lt;typename Index_ , typename Value_ , typename Distance_ , class Matrix_  = knncolle::Matrix&lt;Index_, Value_&gt;&gt; </td></tr>
-<tr class="memitem:a0cde2587cea2ab2b029bab8445cd3dd5"><td class="memTemplItemLeft" align="right" valign="top">std::vector&lt; Index_ &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="#a0cde2587cea2ab2b029bab8445cd3dd5">compute</a> (std::size_t num_dims, Index_ num_obs, const Value_ *data, const <a class="elRef" href="https://knncolle.github.io/knncolle/classknncolle_1_1Builder.html">knncolle::Builder</a>&lt; Index_, Value_, Distance_, Matrix_ &gt; &amp;knn_method, const <a class="el" href="structnenesub_1_1Options.html">Options</a> &amp;options)</td></tr>
-<tr class="separator:a0cde2587cea2ab2b029bab8445cd3dd5"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa83f44b27605b0e8eaadc797a28424f2" id="r_aa83f44b27605b0e8eaadc797a28424f2"><td class="memTemplParams" colspan="2">template&lt;typename Index_ , typename Input_ , typename Distance_ , class Matrix_  = knncolle::Matrix&lt;Index_, Input_&gt;&gt; </td></tr>
+<tr class="memitem:aa83f44b27605b0e8eaadc797a28424f2"><td class="memTemplItemLeft" align="right" valign="top">std::vector&lt; Index_ &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="#aa83f44b27605b0e8eaadc797a28424f2">compute</a> (std::size_t num_dims, Index_ num_obs, const Input_ *data, const <a class="elRef" href="https://knncolle.github.io/knncolle/classknncolle_1_1Builder.html">knncolle::Builder</a>&lt; Index_, Input_, Distance_, Matrix_ &gt; &amp;knn_method, const <a class="el" href="structnenesub_1_1Options.html">Options</a> &amp;options)</td></tr>
+<tr class="separator:aa83f44b27605b0e8eaadc797a28424f2"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Nearest-neighbors subsampling. </p>
@@ -279,13 +279,13 @@ template&lt;typename Index_ , typename Input_ , typename Distance_ &gt; </div>
 
 </div>
 </div>
-<a id="a0cde2587cea2ab2b029bab8445cd3dd5" name="a0cde2587cea2ab2b029bab8445cd3dd5"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a0cde2587cea2ab2b029bab8445cd3dd5">&#9670;&#160;</a></span>compute() <span class="overload">[4/4]</span></h2>
+<a id="aa83f44b27605b0e8eaadc797a28424f2" name="aa83f44b27605b0e8eaadc797a28424f2"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa83f44b27605b0e8eaadc797a28424f2">&#9670;&#160;</a></span>compute() <span class="overload">[4/4]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;typename Index_ , typename Value_ , typename Distance_ , class Matrix_  = knncolle::Matrix&lt;Index_, Value_&gt;&gt; </div>
+template&lt;typename Index_ , typename Input_ , typename Distance_ , class Matrix_  = knncolle::Matrix&lt;Index_, Input_&gt;&gt; </div>
       <table class="memname">
         <tr>
           <td class="memname">std::vector&lt; Index_ &gt; nenesub::compute </td>
@@ -300,12 +300,12 @@ template&lt;typename Index_ , typename Value_ , typename Distance_ , class Matri
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">const Value_ *</td>          <td class="paramname"><span class="paramname"><em>data</em></span>, </td>
+          <td class="paramtype">const Input_ *</td>          <td class="paramname"><span class="paramname"><em>data</em></span>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">const <a class="elRef" href="https://knncolle.github.io/knncolle/classknncolle_1_1Builder.html">knncolle::Builder</a>&lt; Index_, Value_, Distance_, Matrix_ &gt; &amp;</td>          <td class="paramname"><span class="paramname"><em>knn_method</em></span>, </td>
+          <td class="paramtype">const <a class="elRef" href="https://knncolle.github.io/knncolle/classknncolle_1_1Builder.html">knncolle::Builder</a>&lt; Index_, Input_, Distance_, Matrix_ &gt; &amp;</td>          <td class="paramname"><span class="paramname"><em>knn_method</em></span>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
@@ -319,7 +319,7 @@ template&lt;typename Index_ , typename Value_ , typename Distance_ , class Matri
   <table class="tparams">
     <tr><td class="paramname">Dim_</td><td>Integer type for the dimension index. </td></tr>
     <tr><td class="paramname">Index_</td><td>Integer type for the observation index. </td></tr>
-    <tr><td class="paramname">Value_</td><td>Numeric type for the input data. </td></tr>
+    <tr><td class="paramname">Input_</td><td>Numeric type for the input data. </td></tr>
     <tr><td class="paramname">Distance_</td><td>Floating-point type for the distances. </td></tr>
     <tr><td class="paramname">Matrix_</td><td>Class of the input data matrix for the neighbor search. This should satisfy the <code><a class="elRef" href="https://knncolle.github.io/knncolle/classknncolle_1_1Matrix.html">knncolle::Matrix</a></code> interface.</td></tr>
   </table>
