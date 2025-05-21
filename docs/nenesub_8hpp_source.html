@@ -231,48 +231,49 @@ $(function(){ initResizable(false); });
 <div class="line"><a id="l00217" name="l00217"></a><span class="lineno">  217</span>    }</div>
 <div class="line"><a id="l00218" name="l00218"></a><span class="lineno">  218</span> </div>
 <div class="line"><a id="l00219" name="l00219"></a><span class="lineno">  219</span>    Index_ nobs = prebuilt.<a class="code hl_functionRef" href="https://knncolle.github.io/knncolle/classknncolle_1_1Prebuilt.html#a560fec57d6ec36d288b6cd80e9f4c7bd">num_observations</a>();</div>
-<div class="line"><a id="l00220" name="l00220"></a><span class="lineno">  220</span>    std::vector&lt;std::vector&lt;Index_&gt; &gt; nn_indices(nobs);</div>
-<div class="line"><a id="l00221" name="l00221"></a><span class="lineno">  221</span>    std::vector&lt;Distance_&gt; max_distance(nobs);</div>
-<div class="line"><a id="l00222" name="l00222"></a><span class="lineno">  222</span> </div>
-<div class="line"><a id="l00223" name="l00223"></a><span class="lineno">  223</span>    <a class="code hl_functionRef" href="https://knncolle.github.io/knncolle/namespaceknncolle.html#a5faf80c12bbfbab853c41f6d001fe073">knncolle::parallelize</a>(options.<a class="code hl_variable" href="structnenesub_1_1Options.html#a97589522562c135c803914e6e4abdecc">num_threads</a>, nobs, [&amp;](<span class="keywordtype">int</span>, Index_ start, Index_ length) -&gt; <span class="keywordtype">void</span> {</div>
-<div class="line"><a id="l00224" name="l00224"></a><span class="lineno">  224</span>        auto sptr = prebuilt.initialize();</div>
-<div class="line"><a id="l00225" name="l00225"></a><span class="lineno">  225</span>        std::vector&lt;Distance_&gt; nn_distances;</div>
-<div class="line"><a id="l00226" name="l00226"></a><span class="lineno">  226</span>        for (Index_ i = start, end = start + length; i &lt; end; ++i) {</div>
-<div class="line"><a id="l00227" name="l00227"></a><span class="lineno">  227</span>            sptr-&gt;search(i, k, &amp;(nn_indices[i]), &amp;nn_distances);</div>
-<div class="line"><a id="l00228" name="l00228"></a><span class="lineno">  228</span>            max_distance[i] = (k ? 0 : nn_distances.back());</div>
-<div class="line"><a id="l00229" name="l00229"></a><span class="lineno">  229</span>        }</div>
-<div class="line"><a id="l00230" name="l00230"></a><span class="lineno">  230</span>    });</div>
-<div class="line"><a id="l00231" name="l00231"></a><span class="lineno">  231</span> </div>
-<div class="line"><a id="l00232" name="l00232"></a><span class="lineno">  232</span>    std::vector&lt;Index_&gt; output;</div>
-<div class="line"><a id="l00233" name="l00233"></a><span class="lineno">  233</span>    <a class="code hl_function" href="namespacenenesub.html#a38e855459f3bf52b4248a40e73a27129">compute</a>(</div>
-<div class="line"><a id="l00234" name="l00234"></a><span class="lineno">  234</span>        nobs,</div>
-<div class="line"><a id="l00235" name="l00235"></a><span class="lineno">  235</span>        [&amp;](Index_ i) -&gt; <span class="keyword">const</span> std::vector&lt;Index_&gt;&amp; { <span class="keywordflow">return</span> nn_indices[i]; }, </div>
-<div class="line"><a id="l00236" name="l00236"></a><span class="lineno">  236</span>        [](<span class="keyword">const</span> std::vector&lt;Index_&gt;&amp; x, Index_ n) -&gt; Index_ { <span class="keywordflow">return</span> x[n]; }, </div>
-<div class="line"><a id="l00237" name="l00237"></a><span class="lineno">  237</span>        [&amp;](Index_ i) -&gt; Distance_ { <span class="keywordflow">return</span> max_distance[i]; },</div>
-<div class="line"><a id="l00238" name="l00238"></a><span class="lineno">  238</span>        options,</div>
-<div class="line"><a id="l00239" name="l00239"></a><span class="lineno">  239</span>        output</div>
-<div class="line"><a id="l00240" name="l00240"></a><span class="lineno">  240</span>    );</div>
-<div class="line"><a id="l00241" name="l00241"></a><span class="lineno">  241</span>    <span class="keywordflow">return</span> output;</div>
-<div class="line"><a id="l00242" name="l00242"></a><span class="lineno">  242</span>}</div>
+<div class="line"><a id="l00220" name="l00220"></a><span class="lineno">  220</span>    <span class="keyword">auto</span> capped_k = <a class="code hl_functionRef" href="https://knncolle.github.io/knncolle/namespaceknncolle.html#a926c81cd626de7081b073a891d352543">knncolle::cap_k</a>(k, nobs);</div>
+<div class="line"><a id="l00221" name="l00221"></a><span class="lineno">  221</span>    std::vector&lt;std::vector&lt;Index_&gt; &gt; nn_indices(nobs);</div>
+<div class="line"><a id="l00222" name="l00222"></a><span class="lineno">  222</span>    std::vector&lt;Distance_&gt; max_distance(nobs);</div>
+<div class="line"><a id="l00223" name="l00223"></a><span class="lineno">  223</span> </div>
+<div class="line"><a id="l00224" name="l00224"></a><span class="lineno">  224</span>    <a class="code hl_functionRef" href="https://knncolle.github.io/knncolle/namespaceknncolle.html#a5faf80c12bbfbab853c41f6d001fe073">knncolle::parallelize</a>(options.<a class="code hl_variable" href="structnenesub_1_1Options.html#a97589522562c135c803914e6e4abdecc">num_threads</a>, nobs, [&amp;](<span class="keywordtype">int</span>, Index_ start, Index_ length) -&gt; <span class="keywordtype">void</span> {</div>
+<div class="line"><a id="l00225" name="l00225"></a><span class="lineno">  225</span>        auto sptr = prebuilt.initialize();</div>
+<div class="line"><a id="l00226" name="l00226"></a><span class="lineno">  226</span>        std::vector&lt;Distance_&gt; nn_distances;</div>
+<div class="line"><a id="l00227" name="l00227"></a><span class="lineno">  227</span>        for (Index_ i = start, end = start + length; i &lt; end; ++i) {</div>
+<div class="line"><a id="l00228" name="l00228"></a><span class="lineno">  228</span>            sptr-&gt;search(i, capped_k, &amp;(nn_indices[i]), &amp;nn_distances);</div>
+<div class="line"><a id="l00229" name="l00229"></a><span class="lineno">  229</span>            max_distance[i] = (capped_k ? 0 : nn_distances.back());</div>
+<div class="line"><a id="l00230" name="l00230"></a><span class="lineno">  230</span>        }</div>
+<div class="line"><a id="l00231" name="l00231"></a><span class="lineno">  231</span>    });</div>
+<div class="line"><a id="l00232" name="l00232"></a><span class="lineno">  232</span> </div>
+<div class="line"><a id="l00233" name="l00233"></a><span class="lineno">  233</span>    std::vector&lt;Index_&gt; output;</div>
+<div class="line"><a id="l00234" name="l00234"></a><span class="lineno">  234</span>    <a class="code hl_function" href="namespacenenesub.html#a38e855459f3bf52b4248a40e73a27129">compute</a>(</div>
+<div class="line"><a id="l00235" name="l00235"></a><span class="lineno">  235</span>        nobs,</div>
+<div class="line"><a id="l00236" name="l00236"></a><span class="lineno">  236</span>        [&amp;](Index_ i) -&gt; <span class="keyword">const</span> std::vector&lt;Index_&gt;&amp; { <span class="keywordflow">return</span> nn_indices[i]; }, </div>
+<div class="line"><a id="l00237" name="l00237"></a><span class="lineno">  237</span>        [](<span class="keyword">const</span> std::vector&lt;Index_&gt;&amp; x, Index_ n) -&gt; Index_ { <span class="keywordflow">return</span> x[n]; }, </div>
+<div class="line"><a id="l00238" name="l00238"></a><span class="lineno">  238</span>        [&amp;](Index_ i) -&gt; Distance_ { <span class="keywordflow">return</span> max_distance[i]; },</div>
+<div class="line"><a id="l00239" name="l00239"></a><span class="lineno">  239</span>        options,</div>
+<div class="line"><a id="l00240" name="l00240"></a><span class="lineno">  240</span>        output</div>
+<div class="line"><a id="l00241" name="l00241"></a><span class="lineno">  241</span>    );</div>
+<div class="line"><a id="l00242" name="l00242"></a><span class="lineno">  242</span>    <span class="keywordflow">return</span> output;</div>
+<div class="line"><a id="l00243" name="l00243"></a><span class="lineno">  243</span>}</div>
 </div>
-<div class="line"><a id="l00243" name="l00243"></a><span class="lineno">  243</span> </div>
-<div class="line"><a id="l00262" name="l00262"></a><span class="lineno">  262</span><span class="keyword">template</span>&lt;<span class="keyword">typename</span> Index_, <span class="keyword">typename</span> Input_, <span class="keyword">typename</span> Distance_, <span class="keyword">class</span> Matrix_ = knncolle::Matrix&lt;Index_, Input_&gt; &gt;</div>
-<div class="foldopen" id="foldopen00263" data-start="{" data-end="}">
-<div class="line"><a id="l00263" name="l00263"></a><span class="lineno"><a class="line" href="namespacenenesub.html#aa83f44b27605b0e8eaadc797a28424f2">  263</a></span>std::vector&lt;Index_&gt; <a class="code hl_function" href="namespacenenesub.html#a38e855459f3bf52b4248a40e73a27129">compute</a>(</div>
-<div class="line"><a id="l00264" name="l00264"></a><span class="lineno">  264</span>    std::size_t num_dims, </div>
-<div class="line"><a id="l00265" name="l00265"></a><span class="lineno">  265</span>    Index_ num_obs, </div>
-<div class="line"><a id="l00266" name="l00266"></a><span class="lineno">  266</span>    <span class="keyword">const</span> Input_* data, </div>
-<div class="line"><a id="l00267" name="l00267"></a><span class="lineno">  267</span>    <span class="keyword">const</span> <a class="code hl_classRef" href="https://knncolle.github.io/knncolle/classknncolle_1_1Builder.html">knncolle::Builder&lt;Index_, Input_, Distance_, Matrix_&gt;</a>&amp; knn_method,</div>
-<div class="line"><a id="l00268" name="l00268"></a><span class="lineno">  268</span>    <span class="keyword">const</span> <a class="code hl_struct" href="structnenesub_1_1Options.html">Options</a>&amp; options) </div>
-<div class="line"><a id="l00269" name="l00269"></a><span class="lineno">  269</span>{</div>
-<div class="line"><a id="l00270" name="l00270"></a><span class="lineno">  270</span>    <span class="keyword">auto</span> prebuilt = knn_method.<a class="code hl_functionRef" href="https://knncolle.github.io/knncolle/classknncolle_1_1Builder.html#a93cac638de3e4ad31919bc5d677d16b7">build_unique</a>(<a class="code hl_classRef" href="https://knncolle.github.io/knncolle/classknncolle_1_1SimpleMatrix.html">knncolle::SimpleMatrix&lt;Index_, Input_&gt;</a>(num_dims, num_obs, data));</div>
-<div class="line"><a id="l00271" name="l00271"></a><span class="lineno">  271</span>    <span class="keywordflow">return</span> <a class="code hl_function" href="namespacenenesub.html#a38e855459f3bf52b4248a40e73a27129">compute</a>(*prebuilt, options);</div>
-<div class="line"><a id="l00272" name="l00272"></a><span class="lineno">  272</span>}</div>
+<div class="line"><a id="l00244" name="l00244"></a><span class="lineno">  244</span> </div>
+<div class="line"><a id="l00263" name="l00263"></a><span class="lineno">  263</span><span class="keyword">template</span>&lt;<span class="keyword">typename</span> Index_, <span class="keyword">typename</span> Input_, <span class="keyword">typename</span> Distance_, <span class="keyword">class</span> Matrix_ = knncolle::Matrix&lt;Index_, Input_&gt; &gt;</div>
+<div class="foldopen" id="foldopen00264" data-start="{" data-end="}">
+<div class="line"><a id="l00264" name="l00264"></a><span class="lineno"><a class="line" href="namespacenenesub.html#aa83f44b27605b0e8eaadc797a28424f2">  264</a></span>std::vector&lt;Index_&gt; <a class="code hl_function" href="namespacenenesub.html#a38e855459f3bf52b4248a40e73a27129">compute</a>(</div>
+<div class="line"><a id="l00265" name="l00265"></a><span class="lineno">  265</span>    std::size_t num_dims, </div>
+<div class="line"><a id="l00266" name="l00266"></a><span class="lineno">  266</span>    Index_ num_obs, </div>
+<div class="line"><a id="l00267" name="l00267"></a><span class="lineno">  267</span>    <span class="keyword">const</span> Input_* data, </div>
+<div class="line"><a id="l00268" name="l00268"></a><span class="lineno">  268</span>    <span class="keyword">const</span> <a class="code hl_classRef" href="https://knncolle.github.io/knncolle/classknncolle_1_1Builder.html">knncolle::Builder&lt;Index_, Input_, Distance_, Matrix_&gt;</a>&amp; knn_method,</div>
+<div class="line"><a id="l00269" name="l00269"></a><span class="lineno">  269</span>    <span class="keyword">const</span> <a class="code hl_struct" href="structnenesub_1_1Options.html">Options</a>&amp; options) </div>
+<div class="line"><a id="l00270" name="l00270"></a><span class="lineno">  270</span>{</div>
+<div class="line"><a id="l00271" name="l00271"></a><span class="lineno">  271</span>    <span class="keyword">auto</span> prebuilt = knn_method.<a class="code hl_functionRef" href="https://knncolle.github.io/knncolle/classknncolle_1_1Builder.html#a93cac638de3e4ad31919bc5d677d16b7">build_unique</a>(<a class="code hl_classRef" href="https://knncolle.github.io/knncolle/classknncolle_1_1SimpleMatrix.html">knncolle::SimpleMatrix&lt;Index_, Input_&gt;</a>(num_dims, num_obs, data));</div>
+<div class="line"><a id="l00272" name="l00272"></a><span class="lineno">  272</span>    <span class="keywordflow">return</span> <a class="code hl_function" href="namespacenenesub.html#a38e855459f3bf52b4248a40e73a27129">compute</a>(*prebuilt, options);</div>
+<div class="line"><a id="l00273" name="l00273"></a><span class="lineno">  273</span>}</div>
 </div>
-<div class="line"><a id="l00273" name="l00273"></a><span class="lineno">  273</span> </div>
-<div class="line"><a id="l00274" name="l00274"></a><span class="lineno">  274</span>}</div>
-<div class="line"><a id="l00275" name="l00275"></a><span class="lineno">  275</span> </div>
-<div class="line"><a id="l00276" name="l00276"></a><span class="lineno">  276</span><span class="preprocessor">#endif</span></div>
+<div class="line"><a id="l00274" name="l00274"></a><span class="lineno">  274</span> </div>
+<div class="line"><a id="l00275" name="l00275"></a><span class="lineno">  275</span>}</div>
+<div class="line"><a id="l00276" name="l00276"></a><span class="lineno">  276</span> </div>
+<div class="line"><a id="l00277" name="l00277"></a><span class="lineno">  277</span><span class="preprocessor">#endif</span></div>
 <div class="ttc" id="aclassknncolle_1_1Builder_html"><div class="ttname"><a href="https://knncolle.github.io/knncolle/classknncolle_1_1Builder.html">knncolle::Builder</a></div></div>
 <div class="ttc" id="aclassknncolle_1_1Builder_html_a93cac638de3e4ad31919bc5d677d16b7"><div class="ttname"><a href="https://knncolle.github.io/knncolle/classknncolle_1_1Builder.html#a93cac638de3e4ad31919bc5d677d16b7">knncolle::Builder::build_unique</a></div><div class="ttdeci">std::unique_ptr&lt; Prebuilt&lt; Index_, Data_, Distance_ &gt; &gt; build_unique(const Matrix_ &amp;data) const</div></div>
 <div class="ttc" id="aclassknncolle_1_1Prebuilt_html"><div class="ttname"><a href="https://knncolle.github.io/knncolle/classknncolle_1_1Prebuilt.html">knncolle::Prebuilt</a></div></div>
@@ -280,6 +281,7 @@ $(function(){ initResizable(false); });
 <div class="ttc" id="aclassknncolle_1_1SimpleMatrix_html"><div class="ttname"><a href="https://knncolle.github.io/knncolle/classknncolle_1_1SimpleMatrix.html">knncolle::SimpleMatrix</a></div></div>
 <div class="ttc" id="aknncolle_8hpp_html"><div class="ttname"><a href="https://knncolle.github.io/knncolle/knncolle_8hpp.html">knncolle.hpp</a></div></div>
 <div class="ttc" id="anamespaceknncolle_html_a5faf80c12bbfbab853c41f6d001fe073"><div class="ttname"><a href="https://knncolle.github.io/knncolle/namespaceknncolle.html#a5faf80c12bbfbab853c41f6d001fe073">knncolle::parallelize</a></div><div class="ttdeci">void parallelize(int num_workers, Task_ num_tasks, Run_ run_task_range)</div></div>
+<div class="ttc" id="anamespaceknncolle_html_a926c81cd626de7081b073a891d352543"><div class="ttname"><a href="https://knncolle.github.io/knncolle/namespaceknncolle.html#a926c81cd626de7081b073a891d352543">knncolle::cap_k</a></div><div class="ttdeci">int cap_k(int k, Index_ num_observations)</div></div>
 <div class="ttc" id="anamespaceknncolle_html_a97693d779b6041859ffa0ef2d9c1500b"><div class="ttname"><a href="https://knncolle.github.io/knncolle/namespaceknncolle.html#a97693d779b6041859ffa0ef2d9c1500b">knncolle::NeighborList</a></div><div class="ttdeci">std::vector&lt; std::vector&lt; std::pair&lt; Index_, Distance_ &gt; &gt; &gt; NeighborList</div></div>
 <div class="ttc" id="anamespacenenesub_html"><div class="ttname"><a href="namespacenenesub.html">nenesub</a></div><div class="ttdoc">Nearest-neighbors subsampling.</div></div>
 <div class="ttc" id="anamespacenenesub_html_a38e855459f3bf52b4248a40e73a27129"><div class="ttname"><a href="namespacenenesub.html#a38e855459f3bf52b4248a40e73a27129">nenesub::compute</a></div><div class="ttdeci">void compute(Index_ num_obs, GetNeighbors_ get_neighbors, GetIndex_ get_index, GetMaxDistance_ get_max_distance, const Options &amp;options, std::vector&lt; Index_ &gt; &amp;selected)</div><div class="ttdef"><b>Definition</b> nenesub.hpp:88</div></div>
