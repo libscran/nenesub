@@ -217,6 +217,7 @@ std::vector<Index_> compute(const knncolle::Prebuilt<Index_, Input_, Distance_>&
     }
 
     Index_ nobs = prebuilt.num_observations();
+    auto capped_k = knncolle::cap_k(k, nobs);
     std::vector<std::vector<Index_> > nn_indices(nobs);
     std::vector<Distance_> max_distance(nobs);
 
@@ -224,8 +225,8 @@ std::vector<Index_> compute(const knncolle::Prebuilt<Index_, Input_, Distance_>&
         auto sptr = prebuilt.initialize();
         std::vector<Distance_> nn_distances;
         for (Index_ i = start, end = start + length; i < end; ++i) {
-            sptr->search(i, k, &(nn_indices[i]), &nn_distances);
-            max_distance[i] = (k ? 0 : nn_distances.back());
+            sptr->search(i, capped_k, &(nn_indices[i]), &nn_distances);
+            max_distance[i] = (capped_k ? 0 : nn_distances.back());
         }
     });
 
