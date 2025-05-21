@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.14)
 
 project(nenesub
-    VERSION 0.1.0
+    VERSION 0.2.0
     DESCRIPTION "Nearest-neighbor-based subsampling"
     LANGUAGES CXX)
 
@@ -22,7 +22,7 @@ option(NENESUB_FETCH_EXTERN "Automatically fetch nenesub's external dependencies
 if(NENESUB_FETCH_EXTERN)
     add_subdirectory(extern)
 else()
-    find_package(knncolle_knncolle 2.0.0 CONFIG REQUIRED)
+    find_package(knncolle_knncolle 3.0.0 CONFIG REQUIRED)
 endif()
 
 target_link_libraries(nenesub INTERFACE knncolle::knncolle)
