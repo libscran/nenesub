@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.14)
 
 project(nenesub
-    VERSION 0.2.0
+    VERSION 0.2.1
     DESCRIPTION "Nearest-neighbor-based subsampling"
     LANGUAGES CXX)
 
