@@ -28,12 +28,14 @@ struct Options {
     /**
      * The number of nearest neighbors to use, i.e., \f$k\f$. 
      * Only relevant for the `compute()` overloads without pre-computed neighbors.
+     * Larger values will result in stronger downsampling.
      */
     int num_neighbors = 20;
 
     /**
      * The minimum number of remaining neighbors that an observation must have in order to be selected, i.e., \f$m\f$.
      * This should be less than or equal to `Options::num_neighbors`.
+     * Larger values will result in stronger downsampling.
      */
     int min_remaining = 10;
 
@@ -57,14 +59,15 @@ std::remove_cv_t<std::remove_reference_t<Input_> > I(Input_ x) {
  */
 
 /**
- * This function generates a deterministic subsampling of a dataset based on nearest neighbors.
- * We first identify the \f$k\f$-nearest neighbors of each observation and use that to define its local neighborhood.
- * We select an observation for subsampling if it:
+ * Deterministically subsample a dataset based on nearest neighbors.
  *
- * - Does not belong in the local neighborhood of any previously selected observation.
- * - Has the most neighbors that are not selected or in the local neighborhoods of previously selected observations.
- *   Ties are broken using the smallest distance to each observation's \f$k\f$-th neighbor (i.e., the densest region of space).
- * - Has at least \f$m\f$ neighbors that are not selected or in the local neighborhoods of any other selected observation.
+ * We use the \f$k\f$-nearest neighbors of each observation to define its local neighborhood.
+ * We select an observation in the subsampled dataset if it:
+ *
+ * 1. Does not belong in the local neighborhood (i.e., is not a neighbor) of any previously selected observation.
+ * 2. Has at least \f$m\f$ neighbors that are not selected or in the local neighborhoods of any other selected observation.
+ * 3. Has the most neighbors that are not selected or in the local neighborhoods of previously selected observations, out of all observations that satisfy (1) and (2).
+ *    Ties are broken using the smallest distance to each observation's \f$k\f$-th neighbor, i.e., it lies in the densest region of space.
  *
  * We repeat this process until there are no more observations that satisfy these requirements. 
  *
@@ -78,19 +81,21 @@ std::remove_cv_t<std::remove_reference_t<Input_> > I(Input_ x) {
  * Low-frequency subpopulations will always have at least a few representatives if they are sufficiently distant from other subpopulations.
  * In contrast, random sampling does not provide strong guarantees for capture of a rare subpopulation.
  * We also preserve the relative density across the dataset as more representatives will be generated from high-density regions. 
- * This simplifies the interpretation of analysis results generated from the subsetted dataset.
- * 
- * @tparam Index_ Integer type for the observation indices.
+ * This simplifies the interpretation of analysis results generated from the subsampled dataset.
+ *
+ * More aggressive subsampling can be achieved by recursively applying the **nenesub** method, i.e., subsample the subsampled dataset.
+ * This allows users to achieve higher subsampling rates without long compute times from a very large \f$k\f$.
+ *
+ * @tparam Index_ Integer type of the observation indices.
  * @tparam GetNeighbors_ Function that accepts an `Index_` index and returns a (const reference to a) container-like object.
- * The container should be support the `[]` operator and have a `size()` method.
+ * The container should implement the `[]` operator and have a `size()` method.
  * @tparam GetIndex_ Function that accepts a (const reference to a) container of the type returned by `GetNeighbors_` and an `Index_` into that container, and returns `Index_`.
- * @tparam GetNeighbors_ Function that accepts an `Index_` index and returns a distance value, typically floating-point.
+ * @tparam GetMaxDistance_ Function that accepts an `Index_` index and returns a distance, typically floating-point.
  *
  * @param num_obs Number of observations in the dataset.
  * @param get_neighbors Function that accepts an integer observation index in `[0, num_obs)` and returns a container of that observation's neighbors.
  * Each element of the container specifies the index of a neighboring observation.
- * It is generally expected that the returned containers have the same size for all indices.
- * @param get_index Function to return the index of each neighbor, given the container returned by `get_neighbors` and an index into that container.
+ * @param get_index Function to return the index of each neighbor, given the container returned by `get_neighbors` and a position in that container.
  * @param get_max_distance Function that accepts an integer observation index in `[0, num_obs)` and returns the distance from that observation to its furthest neighbor.
  * @param options Further options. 
  * Note that `Options::num_neighbors` and `Options::num_threads` are ignored here.
@@ -180,14 +185,13 @@ void compute(const Index_ num_obs, const GetNeighbors_ get_neighbors, const GetI
 }
 
 /**
- * Overload to enable convenient usage with pre-computed neighbors from **knncolle**.
+ * Overload of `compute()` to enable convenient usage with pre-computed neighbors from **knncolle**.
  *
- * @tparam Index_ Integer type for the neighbor indices.
- * @tparam Distance_ Floating-point type for the distances.
+ * @tparam Index_ Integer type of the neighbor indices.
+ * @tparam Distance_ Floating-point type of the distances.
  *
  * @param neighbors Vector of nearest-neighbor search results for each observation.
- * Each entry is a pair containing a vector of neighbor indices and a vector of distances to those neighbors.
- * Neighbors should be sorted by increasing distance.
+ * Each entry is a vector containing (index, distance) pairs for all neighbors, should by increasing distance.
  * The same number of neighbors should be present for each observation.
  * @param options Further options. 
  * Note that `Options::num_neighbors` and `Options::num_threads` are ignored here.
@@ -209,13 +213,13 @@ std::vector<Index_> compute(const knncolle::NeighborList<Index_, Distance_>& nei
 }
 
 /**
- * Overload to enable convenient usage with a prebuilt nearest-neighbor search index from **knncolle**.
+ * Overload of `compute()` for convenient usage with a prebuilt nearest-neighbor search index from **knncolle**.
  *
- * @tparam Dim_ Integer type for the dimension index.
- * @tparam Index_ Integer type for the observation index.
- * @tparam Input_ Numeric type for the input data used to build the search index.
+ * @tparam Dim_ Integer type of the dimension index.
+ * @tparam Index_ Integer type of the observation index.
+ * @tparam Input_ Numeric type of the input data used to build the search index.
  * This is only required to define the `knncolle::Prebuilt` class and is otherwise ignored.
- * @tparam Distance_ Floating-point type for the distances.
+ * @tparam Distance_ Floating-point type of the distances.
  *
  * @param[in] prebuilt A prebuilt nearest-neighbor search index on the observations of interest.
  * @param options Further options.
@@ -256,12 +260,12 @@ std::vector<Index_> compute(const knncolle::Prebuilt<Index_, Input_, Distance_>&
 }
 
 /**
- * Overload to enable convenient usage with a column-major array of coordinates for each observation.
+ * Overload of `compute()` for convenient usage with a column-major array of coordinates for each observation.
  *
- * @tparam Dim_ Integer type for the dimension index.
- * @tparam Index_ Integer type for the observation index.
- * @tparam Input_ Numeric type for the input data.
- * @tparam Distance_ Floating-point type for the distances.
+ * @tparam Dim_ Integer type of the dimension index.
+ * @tparam Index_ Integer type of the observation index.
+ * @tparam Input_ Numeric type of the input data.
+ * @tparam Distance_ Floating-point type of the distances.
  * @tparam Matrix_ Class of the input data matrix for the neighbor search.
  * This should satisfy the `knncolle::Matrix` interface.
  *

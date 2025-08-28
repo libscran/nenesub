@@ -7,14 +7,14 @@
 ## Overview
 
 **nenesub** implements a simple algorithm for deterministic subsampling of a dataset based on nearest neighbors.
-Starting from dense regions of the high-dimensional space, we select an observation for inclusion into the subsampled set.
+Starting from densest region in the high-dimensional space, we select an observation for inclusion into the subsampled dataset.
 Every time we select an observation, we remove it and all of its nearest neighbors from the dataset.
 We then select the next observation with the most remaining neighbors, with ties broken by density; this is repeated until there are no more observations.
 
-The general idea is that each selected observation serves as a representative for its nearest neighbors.
-This ensures that the subsampled points are well-distributed across the dataset.
+The premise is that each selected observation serves as a representative for its nearest neighbors.
+This ensures that the subsampled points are well-distributed across the original dataset.
 Low-frequency subpopulations will always have at least a few representatives if they are sufficiently distant from other subpopulations.
-We also preserve the relative density across the dataset as more representatives will be generated from high-density regions. 
+We also preserve the relative density of the original dataset as more representatives will be generated from high-density regions. 
 
 ## Quick start
 
