@@ -8,6 +8,7 @@
 #include <type_traits>
 
 #include "knncolle/knncolle.hpp"
+#include "sanisizer/sanisizer.hpp"
 
 /**
  * @file nenesub.hpp
@@ -124,8 +125,8 @@ void compute(const Index_ num_obs, const GetNeighbors_ get_neighbors, const GetI
         }()
     );
 
-    std::vector<std::vector<Index_> > reverse_map(num_obs);
-    std::vector<Index_> remaining(num_obs);
+    auto reverse_map = sanisizer::create<std::vector<std::vector<Index_> > >(num_obs);
+    auto remaining = sanisizer::create<std::vector<Index_> >(num_obs);
     for (Index_ c = 0; c < num_obs; ++c) {
         const auto& neighbors = get_neighbors(c);
         const Index_ nneighbors = neighbors.size();
@@ -140,7 +141,7 @@ void compute(const Index_ num_obs, const GetNeighbors_ get_neighbors, const GetI
     }
 
     selected.clear();
-    std::vector<unsigned char> tainted(num_obs);
+    auto tainted = sanisizer::create<std::vector<unsigned char> >(num_obs);
     Index_ min_remaining = options.min_remaining;
     while (!store.empty()) {
         auto payload = store.top();
@@ -230,8 +231,8 @@ std::vector<Index_> compute(const knncolle::Prebuilt<Index_, Input_, Distance_>&
 
     const Index_ nobs = prebuilt.num_observations();
     const auto capped_k = knncolle::cap_k(k, nobs);
-    std::vector<std::vector<Index_> > nn_indices(nobs);
-    std::vector<Distance_> max_distance(nobs);
+    auto nn_indices = sanisizer::create<std::vector<std::vector<Index_> > >(nobs);
+    auto max_distance = sanisizer::create<std::vector<Distance_> >(nobs);
 
     knncolle::parallelize(options.num_threads, nobs, [&](const int, const Index_ start, const Index_ length) -> void {
         const auto sptr = prebuilt.initialize();
