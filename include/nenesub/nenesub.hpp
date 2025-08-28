@@ -112,7 +112,7 @@ void compute(const Index_ num_obs, const GetNeighbors_ get_neighbors, const GetI
         Distance max_distance;
     };
 
-    auto cmp = [](const Payload& left, const Payload& right) -> bool {
+    const auto cmp = [](const Payload& left, const Payload& right) -> bool {
         if (left.remaining == right.remaining) {
             if (left.max_distance == right.max_distance) {
                 return left.identity > right.identity; // smallest identities show up first.
@@ -151,32 +151,37 @@ void compute(const Index_ num_obs, const GetNeighbors_ get_neighbors, const GetI
     while (!store.empty()) {
         auto payload = store.top();
         store.pop();
-        if (tainted[payload.identity]) {
+        if (tainted[payload.identity]) { // it's already in another selected point's local neighborhood.
             continue;
         }
 
-        const auto& neighbors = get_neighbors(payload.identity);
         const Index_ new_remaining = remaining[payload.identity];
+        if (new_remaining < min_remaining) { // it can't be valid so we skip it.
+            continue;
+        }
 
-        if (new_remaining >= min_remaining) {
-            payload.remaining = new_remaining;
-            if (!store.empty() && cmp(payload, store.top())) {
-                store.push(payload);
-            } else {
-                selected.push_back(payload.identity);
-                tainted[payload.identity] = 1;
-                for (const auto x : reverse_map[payload.identity]) {
-                    --remaining[x];
-                }
+        payload.remaining = new_remaining;
+        if (!store.empty() && cmp(payload, store.top())) { // cycling it back into the queue with an updated remaining count, if it's not better than the queue's best.
+            store.push(payload);
+            continue;
+        }
 
-                const Index_ nneighbors = neighbors.size();
-                for (Index_ n = 0; n < nneighbors; ++n) {
-                    auto current = get_index(neighbors, n);
-                    tainted[current] = 1;
-                    for (const auto x : reverse_map[current]) {
-                        --remaining[x];
-                    }
-                }
+        selected.push_back(payload.identity);
+        tainted[payload.identity] = 1;
+        for (const auto x : reverse_map[payload.identity]) {
+            --remaining[x];
+        }
+
+        const auto& neighbors = get_neighbors(payload.identity);
+        const Index_ nneighbors = neighbors.size();
+        for (Index_ n = 0; n < nneighbors; ++n) {
+            const auto current = get_index(neighbors, n);
+            if (tainted[current]) {
+                continue;
+            }
+            tainted[current] = 1;
+            for (const auto x : reverse_map[current]) {
+                --remaining[x];
             }
         }
     }
@@ -243,7 +248,7 @@ std::vector<Index_> compute(const knncolle::Prebuilt<Index_, Input_, Distance_>&
         std::vector<Distance_> nn_distances;
         for (Index_ i = start, end = start + length; i < end; ++i) {
             sptr->search(i, capped_k, &(nn_indices[i]), &nn_distances);
-            max_distance[i] = (capped_k ? 0 : nn_distances.back());
+            max_distance[i] = (capped_k ? nn_distances.back() : 0);
         }
     });
 
