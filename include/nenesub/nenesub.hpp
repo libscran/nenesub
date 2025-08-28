@@ -5,6 +5,7 @@
 #include <queue>
 #include <cstddef>
 #include <algorithm>
+#include <type_traits>
 
 #include "knncolle/knncolle.hpp"
 
@@ -42,6 +43,17 @@ struct Options {
      */
     int num_threads = 10;
 };
+
+/**
+ * @cond
+ */
+template<typename Input_>
+std::remove_cv_t<std::remove_reference_t<Input_> > I(Input_ x) {
+    return x;
+}
+/**
+ * @endcond
+ */
 
 /**
  * This function generates a deterministic subsampling of a dataset based on nearest neighbors.
@@ -85,10 +97,10 @@ struct Options {
  * These are sorted in ascending order.
  */
 template<typename Index_, class GetNeighbors_, class GetIndex_, class GetMaxDistance_>
-void compute(Index_ num_obs, GetNeighbors_ get_neighbors, GetIndex_ get_index, GetMaxDistance_ get_max_distance, const Options& options, std::vector<Index_>& selected) {
-    typedef decltype(get_max_distance(0)) Distance;
+void compute(const Index_ num_obs, const GetNeighbors_ get_neighbors, const GetIndex_ get_index, const GetMaxDistance_ get_max_distance, const Options& options, std::vector<Index_>& selected) {
+    typedef decltype(I(get_max_distance(0))) Distance;
     struct Payload {
-        Payload(Index_ identity, Index_ remaining, Distance max_distance) : remaining(remaining), identity(identity), max_distance(max_distance) {}
+        Payload(const Index_ identity, const Index_ remaining, const Distance max_distance) : remaining(remaining), identity(identity), max_distance(max_distance) {}
         Index_ remaining;
         Index_ identity;
         Distance max_distance;
@@ -103,7 +115,7 @@ void compute(Index_ num_obs, GetNeighbors_ get_neighbors, GetIndex_ get_index, G
         }
         return left.remaining < right.remaining; // largest remaining show up first.
     };
-    std::priority_queue<Payload, std::vector<Payload>, decltype(cmp)> store(
+    std::priority_queue<Payload, std::vector<Payload>, decltype(I(cmp))> store(
         cmp,
         [&]{
             std::vector<Payload> container;
@@ -116,7 +128,7 @@ void compute(Index_ num_obs, GetNeighbors_ get_neighbors, GetIndex_ get_index, G
     std::vector<Index_> remaining(num_obs);
     for (Index_ c = 0; c < num_obs; ++c) {
         const auto& neighbors = get_neighbors(c);
-        Index_ nneighbors = neighbors.size();
+        const Index_ nneighbors = neighbors.size();
 
         if (nneighbors) { // protect get_max_distance just in case there are no neighbors.
             store.emplace(c, nneighbors, get_max_distance(c));
@@ -138,7 +150,7 @@ void compute(Index_ num_obs, GetNeighbors_ get_neighbors, GetIndex_ get_index, G
         }
 
         const auto& neighbors = get_neighbors(payload.identity);
-        Index_ new_remaining = remaining[payload.identity];
+        const Index_ new_remaining = remaining[payload.identity];
 
         if (new_remaining >= min_remaining) {
             payload.remaining = new_remaining;
@@ -147,15 +159,15 @@ void compute(Index_ num_obs, GetNeighbors_ get_neighbors, GetIndex_ get_index, G
             } else {
                 selected.push_back(payload.identity);
                 tainted[payload.identity] = 1;
-                for (auto x : reverse_map[payload.identity]) {
+                for (const auto x : reverse_map[payload.identity]) {
                     --remaining[x];
                 }
 
-                Index_ nneighbors = neighbors.size();
+                const Index_ nneighbors = neighbors.size();
                 for (Index_ n = 0; n < nneighbors; ++n) {
                     auto current = get_index(neighbors, n);
                     tainted[current] = 1;
-                    for (auto x : reverse_map[current]) {
+                    for (const auto x : reverse_map[current]) {
                         --remaining[x];
                     }
                 }
@@ -186,9 +198,9 @@ std::vector<Index_> compute(const knncolle::NeighborList<Index_, Distance_>& nei
     std::vector<Index_> output;
     compute(
         static_cast<Index_>(neighbors.size()),
-        [&](Index_ i) -> const auto& { return neighbors[i]; }, 
-        [](const std::vector<std::pair<Index_, Distance_> >& x, Index_ n) -> Index_ { return x[n].first; }, 
-        [&](Index_ i) -> Distance_ { return neighbors[i].back().second; }, 
+        [&](const Index_ i) -> const auto& { return neighbors[i]; }, 
+        [](const std::vector<std::pair<Index_, Distance_> >& x, const Index_ n) -> Index_ { return x[n].first; }, 
+        [&](const Index_ i) -> Distance_ { return neighbors[i].back().second; }, 
         options,
         output
     );
@@ -211,18 +223,18 @@ std::vector<Index_> compute(const knncolle::NeighborList<Index_, Distance_>& nei
  */
 template<typename Index_, typename Input_, typename Distance_>
 std::vector<Index_> compute(const knncolle::Prebuilt<Index_, Input_, Distance_>& prebuilt, const Options& options) {
-    int k = options.num_neighbors;
+    const int k = options.num_neighbors;
     if (k < options.min_remaining) {
         throw std::runtime_error("number of neighbors is less than 'min_remaining'");
     }
 
-    Index_ nobs = prebuilt.num_observations();
-    auto capped_k = knncolle::cap_k(k, nobs);
+    const Index_ nobs = prebuilt.num_observations();
+    const auto capped_k = knncolle::cap_k(k, nobs);
     std::vector<std::vector<Index_> > nn_indices(nobs);
     std::vector<Distance_> max_distance(nobs);
 
-    knncolle::parallelize(options.num_threads, nobs, [&](int, Index_ start, Index_ length) -> void {
-        auto sptr = prebuilt.initialize();
+    knncolle::parallelize(options.num_threads, nobs, [&](const int, const Index_ start, const Index_ length) -> void {
+        const auto sptr = prebuilt.initialize();
         std::vector<Distance_> nn_distances;
         for (Index_ i = start, end = start + length; i < end; ++i) {
             sptr->search(i, capped_k, &(nn_indices[i]), &nn_distances);
@@ -233,9 +245,9 @@ std::vector<Index_> compute(const knncolle::Prebuilt<Index_, Input_, Distance_>&
     std::vector<Index_> output;
     compute(
         nobs,
-        [&](Index_ i) -> const std::vector<Index_>& { return nn_indices[i]; }, 
-        [](const std::vector<Index_>& x, Index_ n) -> Index_ { return x[n]; }, 
-        [&](Index_ i) -> Distance_ { return max_distance[i]; },
+        [&](const Index_ i) -> const std::vector<Index_>& { return nn_indices[i]; }, 
+        [](const std::vector<Index_>& x, const Index_ n) -> Index_ { return x[n]; }, 
+        [&](const Index_ i) -> Distance_ { return max_distance[i]; },
         options,
         output
     );
@@ -262,13 +274,13 @@ std::vector<Index_> compute(const knncolle::Prebuilt<Index_, Input_, Distance_>&
  */
 template<typename Index_, typename Input_, typename Distance_, class Matrix_ = knncolle::Matrix<Index_, Input_> >
 std::vector<Index_> compute(
-    std::size_t num_dims, 
-    Index_ num_obs, 
+    const std::size_t num_dims, 
+    const Index_ num_obs, 
     const Input_* data, 
     const knncolle::Builder<Index_, Input_, Distance_, Matrix_>& knn_method,
     const Options& options) 
 {
-    auto prebuilt = knn_method.build_unique(knncolle::SimpleMatrix<Index_, Input_>(num_dims, num_obs, data));
+    const auto prebuilt = knn_method.build_unique(knncolle::SimpleMatrix<Index_, Input_>(num_dims, num_obs, data));
     return compute(*prebuilt, options);
 }
 
