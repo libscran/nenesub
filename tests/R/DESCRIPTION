@@ -1,0 +1,16 @@
+Package: nenesub
+Title: Unit testing for the nenesub package
+Description: Pretty much what it says on the tin.
+Authors@R: person("Aaron", "Lun", role=c("cre", "aut"), email="infinite.monkeys.with.keyboards@gmail.com")
+Version: 0.1.0
+Date: 2025-08-28
+Imports:
+    BiocNeighbors,
+    Rcpp
+Suggests:
+    testthat,
+    knitr,
+    rmarkdown
+LinkingTo:
+    Rcpp
+VignetteBuilder: knitr

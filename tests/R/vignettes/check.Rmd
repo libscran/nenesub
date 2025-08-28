@@ -1,0 +1,45 @@
+---
+title: Parameterization of the neighbor search
+author: Aaron Lun
+---
+
+Let's see how the **nenesub** method behaves with respect to $k$ and $m$.
+
+```{r}
+set.seed(999)
+x <- matrix(runif(10000), nrow=10)
+length(nenesub::compute(x, 20, 10)) / ncol(x) # expect 1/20
+length(nenesub::compute(x, 20, 5)) / ncol(x)
+length(nenesub::compute(x, 10, 5)) / ncol(x) # expect 1/10
+length(nenesub::compute(x, 5, 2)) / ncol(x) # expect 1/5
+length(nenesub::compute(x, 50, 10)) / ncol(x) # expect 1/50
+length(nenesub::compute(x, 50, 20)) / ncol(x)
+```
+
+So, the subsampling rate is comparable to $k$, though this breaks down at extreme $m$:
+
+```{r}
+length(nenesub::compute(x, 20, 20)) / ncol(x) # expect 1/20
+length(nenesub::compute(x, 20, 1)) / ncol(x)
+length(nenesub::compute(x, 10, 10)) / ncol(x) # expect 1/10
+length(nenesub::compute(x, 10, 1)) / ncol(x)
+```
+
+We get similar results with different distributions and numbers of cells:
+
+```{r}
+set.seed(9999)
+x <- matrix(rnorm(10000), nrow=5)
+length(nenesub::compute(x, 20, 10)) / ncol(x) # expect 1/20
+length(nenesub::compute(x, 20, 5)) / ncol(x)
+length(nenesub::compute(x, 10, 5)) / ncol(x) # expect 1/10
+length(nenesub::compute(x, 5, 2)) / ncol(x) # expect 1/5
+length(nenesub::compute(x, 50, 10)) / ncol(x) # expect 1/50
+length(nenesub::compute(x, 50, 20)) / ncol(x)
+```
+
+# Session info {-}
+
+```{r}
+sessionInfo()
+```

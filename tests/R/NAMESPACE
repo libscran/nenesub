@@ -1,0 +1,5 @@
+useDynLib(nenesub)
+export(reference)
+export(compute)
+importFrom(Rcpp, sourceCpp)
+importFrom(BiocNeighbors, findKNN)
