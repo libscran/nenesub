@@ -1,13 +1,17 @@
 <map id="nenesub/nenesub.hpp" name="nenesub/nenesub.hpp">
-<area shape="rect" id="Node000001" title="Nearest&#45;neighbors subsampling." alt="" coords="126,5,273,31"/>
+<area shape="rect" id="Node000001" title="Nearest&#45;neighbors subsampling." alt="" coords="219,5,366,31"/>
 <area shape="rect" id="Node000002" title=" " alt="" coords="5,79,63,105"/>
-<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="172,34,77,75,75,70,170,29"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="249,34,78,81,77,76,247,29"/>
 <area shape="rect" id="Node000003" title=" " alt="" coords="87,79,144,105"/>
-<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="187,34,143,71,139,67,183,30"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="264,34,159,76,157,71,262,29"/>
 <area shape="rect" id="Node000004" title=" " alt="" coords="167,79,232,105"/>
-<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="202,31,202,63,197,63,197,31"/>
+<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="278,34,229,72,225,67,275,29"/>
 <area shape="rect" id="Node000005" title=" " alt="" coords="256,79,330,105"/>
-<area shape="poly" id="edge4_Node000001_Node000005" title=" " alt="" coords="217,29,267,67,263,72,214,34"/>
-<area shape="rect" id="Node000006" href="/github/workspace/docs/knncolle.tag$knncolle_8hpp.html" title=" " alt="" coords="353,79,499,105"/>
-<area shape="poly" id="edge5_Node000001_Node000006" title=" " alt="" coords="239,29,374,71,372,76,237,34"/>
+<area shape="poly" id="edge4_Node000001_Node000005" title=" " alt="" coords="295,31,295,63,290,63,290,31"/>
+<area shape="rect" id="Node000006" title=" " alt="" coords="353,79,435,105"/>
+<area shape="poly" id="edge5_Node000001_Node000006" title=" " alt="" coords="311,29,366,67,363,72,308,34"/>
+<area shape="rect" id="Node000007" href="/github/workspace/docs/knncolle.tag$knncolle_8hpp.html" title=" " alt="" coords="459,79,604,105"/>
+<area shape="poly" id="edge6_Node000001_Node000007" title=" " alt="" coords="334,29,477,71,475,77,332,34"/>
+<area shape="rect" id="Node000008" title=" " alt="" coords="628,79,779,105"/>
+<area shape="poly" id="edge7_Node000001_Node000008" title=" " alt="" coords="363,29,618,73,618,78,362,34"/>
 </map>

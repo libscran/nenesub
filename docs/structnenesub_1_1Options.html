@@ -104,7 +104,7 @@ $(function(){ initResizable(false); });
 </div><!--header-->
 <div class="contents">
 
-<p><a class="el" href="structnenesub_1_1Options.html" title="Options for compute().">Options</a> for <code><a class="el" href="namespacenenesub.html#a38e855459f3bf52b4248a40e73a27129">compute()</a></code>.  
+<p><a class="el" href="structnenesub_1_1Options.html" title="Options for compute().">Options</a> for <code><a class="el" href="namespacenenesub.html#a5742c88fc116e5c8faf14805bbafa1b9">compute()</a></code>.  
  <a href="#details">More...</a></p>
 
 <p><code>#include &lt;<a class="el" href="nenesub_8hpp_source.html">nenesub.hpp</a>&gt;</code></p>
@@ -119,7 +119,7 @@ Public Attributes</h2></td></tr>
 <tr class="separator:a97589522562c135c803914e6e4abdecc"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
-<div class="textblock"><p><a class="el" href="structnenesub_1_1Options.html" title="Options for compute().">Options</a> for <code><a class="el" href="namespacenenesub.html#a38e855459f3bf52b4248a40e73a27129">compute()</a></code>. </p>
+<div class="textblock"><p><a class="el" href="structnenesub_1_1Options.html" title="Options for compute().">Options</a> for <code><a class="el" href="namespacenenesub.html#a5742c88fc116e5c8faf14805bbafa1b9">compute()</a></code>. </p>
 </div><h2 class="groupheader">Member Data Documentation</h2>
 <a id="a5df6fdc7c00d5560cf24e707c6d2a318" name="a5df6fdc7c00d5560cf24e707c6d2a318"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a5df6fdc7c00d5560cf24e707c6d2a318">&#9670;&#160;</a></span>num_neighbors</h2>
@@ -132,7 +132,7 @@ Public Attributes</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>The number of nearest neighbors to use, i.e., \(k\). Only relevant for the <code><a class="el" href="namespacenenesub.html#a38e855459f3bf52b4248a40e73a27129">compute()</a></code> overloads without pre-computed neighbors. </p>
+<p>The number of nearest neighbors to use, i.e., \(k\). Only relevant for the <code><a class="el" href="namespacenenesub.html#a5742c88fc116e5c8faf14805bbafa1b9">compute()</a></code> overloads without pre-computed neighbors. Larger values will result in stronger downsampling. </p>
 
 </div>
 </div>
@@ -147,7 +147,7 @@ Public Attributes</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>The minimum number of remaining neighbors that an observation must have in order to be selected, i.e., \(m\). This should be less than or equal to <code><a class="el" href="#a5df6fdc7c00d5560cf24e707c6d2a318">Options::num_neighbors</a></code>. </p>
+<p>The minimum number of remaining neighbors that an observation must have in order to be selected, i.e., \(m\). This should be less than or equal to <code><a class="el" href="#a5df6fdc7c00d5560cf24e707c6d2a318">Options::num_neighbors</a></code>. Larger values will result in stronger downsampling. </p>
 
 </div>
 </div>
@@ -162,7 +162,7 @@ Public Attributes</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>The number of threads to use. This uses the parallelization scheme defined by <code><a class="elRef" href="https://knncolle.github.io/knncolle/namespaceknncolle.html#a5faf80c12bbfbab853c41f6d001fe073">knncolle::parallelize()</a></code>. Only relevant for the <code><a class="el" href="namespacenenesub.html#a38e855459f3bf52b4248a40e73a27129">compute()</a></code> overloads that perform a neighbor search. </p>
+<p>The number of threads to use. This uses the parallelization scheme defined by <code><a class="elRef" href="https://knncolle.github.io/knncolle/namespaceknncolle.html#a5faf80c12bbfbab853c41f6d001fe073">knncolle::parallelize()</a></code>. Only relevant for the <code><a class="el" href="namespacenenesub.html#a5742c88fc116e5c8faf14805bbafa1b9">compute()</a></code> overloads that perform a neighbor search. </p>
 
 </div>
 </div>

@@ -40,8 +40,8 @@
       <type>void</type>
       <name>compute</name>
       <anchorfile>namespacenenesub.html</anchorfile>
-      <anchor>a38e855459f3bf52b4248a40e73a27129</anchor>
-      <arglist>(Index_ num_obs, GetNeighbors_ get_neighbors, GetIndex_ get_index, GetMaxDistance_ get_max_distance, const Options &amp;options, std::vector&lt; Index_ &gt; &amp;selected)</arglist>
+      <anchor>a5742c88fc116e5c8faf14805bbafa1b9</anchor>
+      <arglist>(const Index_ num_obs, const GetNeighbors_ get_neighbors, const GetIndex_ get_index, const GetMaxDistance_ get_max_distance, const Options &amp;options, std::vector&lt; Index_ &gt; &amp;selected)</arglist>
     </member>
     <member kind="function">
       <type>std::vector&lt; Index_ &gt;</type>
@@ -61,8 +61,8 @@
       <type>std::vector&lt; Index_ &gt;</type>
       <name>compute</name>
       <anchorfile>namespacenenesub.html</anchorfile>
-      <anchor>aa83f44b27605b0e8eaadc797a28424f2</anchor>
-      <arglist>(std::size_t num_dims, Index_ num_obs, const Input_ *data, const knncolle::Builder&lt; Index_, Input_, Distance_, Matrix_ &gt; &amp;knn_method, const Options &amp;options)</arglist>
+      <anchor>a5ae8871e73fbc89abdaa4e54486242cf</anchor>
+      <arglist>(const std::size_t num_dims, const Index_ num_obs, const Input_ *data, const knncolle::Builder&lt; Index_, Input_, Distance_, Matrix_ &gt; &amp;knn_method, const Options &amp;options)</arglist>
     </member>
   </compound>
   <compound kind="page">
