@@ -31,11 +31,6 @@ jobs:
     - name: Get latest CMake
       uses: lukka/get-cmake@latest
 
-    - name: Install igraph on Mac
-      if: ${{ matrix.config.os == 'macos-latest' }}
-      run: |
-        brew install igraph
-
     - name: Configure the build
       if: ${{ matrix.config.cov == false }}
       run: cmake -S . -B build
@@ -60,7 +55,7 @@ jobs:
 
     - name: Upload to Codecov
       if: ${{ matrix.config.cov == true }}
-      uses: codecov/codecov-action@v4
+      uses: codecov/codecov-action@v5
       with:
         directory: build/tests/CMakeFiles/libtest.dir/src/
       env:
