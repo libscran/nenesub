@@ -166,7 +166,7 @@ $(function(){ initResizable(false); });
 <div class="line"> </div>
 <div class="line"># For libaries</div>
 <div class="line">target_link_libraries(mylib INTERFACE libscran::nenesub)</div>
-</div><!-- fragment --><p>By default, this will use <code>FetchContent</code> to fetch all external dependencies. Applications should consider pinning versions of all dependencies - see <a href="extern/CMakeLists.txt"><code>extern/CMakeLists.txt</code></a> for suggested versions. If you want to install them manually, use <code>-DMUMOSA_FETCH_EXTERN=OFF</code>.</p>
+</div><!-- fragment --><p>By default, this will use <code>FetchContent</code> to fetch all external dependencies. Applications should consider pinning versions of all dependencies - see <a href="extern/CMakeLists.txt"><code>extern/CMakeLists.txt</code></a> for suggested versions. If you want to install them manually, use <code>-DNENESUB_FETCH_EXTERN=OFF</code>.</p>
 <h2>CMake with <code>find_package()</code></h2>
 <div class="fragment"><div class="line">find_package(libscran_nenesub CONFIG REQUIRED)</div>
 <div class="line">target_link_libraries(mylib INTERFACE libscran::nenesub)</div>
