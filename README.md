@@ -93,7 +93,7 @@ target_link_libraries(mylib INTERFACE libscran::nenesub)
 
 By default, this will use `FetchContent` to fetch all external dependencies.
 Applications should consider pinning versions of all dependencies - see [`extern/CMakeLists.txt`](extern/CMakeLists.txt) for suggested versions.
-If you want to install them manually, use `-DMUMOSA_FETCH_EXTERN=OFF`.
+If you want to install them manually, use `-DNENESUB_FETCH_EXTERN=OFF`.
 
 ### CMake with `find_package()`
 
