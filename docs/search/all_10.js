@@ -7,5 +7,6 @@ var searchData=
   ['searcher_2ehpp_4',['Searcher.hpp',['https://knncolle.github.io/knncolle/Searcher_8hpp.html',1,'']]],
   ['seed_5',['seed',['https://knncolle.github.io/knncolle/structknncolle_1_1VptreeOptions.html#aa55f3dff5e333fe1d34dcfd98fe78aed',1,'knncolle::VptreeOptions']]],
   ['simplematrix_6',['SimpleMatrix',['https://knncolle.github.io/knncolle/classknncolle_1_1SimpleMatrix.html',1,'knncolle::SimpleMatrix&lt; typename Index_, typename Data_ &gt;'],['https://knncolle.github.io/knncolle/classknncolle_1_1SimpleMatrix.html#afe415d2e6adc07aecffab4e8b75ca9e5',1,'knncolle::SimpleMatrix::SimpleMatrix()']]],
-  ['subsampling_7',['Nearest-neighbors subsampling',['../index.html',1,'']]]
+  ['size_7',['size',['https://knncolle.github.io/knncolle/classknncolle_1_1NeighborQueue.html#a08ecb8b2fb208fba3213150b9a14f535',1,'knncolle::NeighborQueue']]],
+  ['subsampling_8',['Nearest-neighbors subsampling',['../index.html',1,'']]]
 ];
